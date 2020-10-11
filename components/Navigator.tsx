@@ -91,9 +91,7 @@ function Navigator(props: NavigatorProps) {
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
-        <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>
-          Paperbase
-        </ListItem>
+        <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>Paperbase</ListItem>
         <ListItem className={clsx(classes.item, classes.itemCategory)}>
           <ListItemIcon className={classes.itemIcon}>
             <HomeIcon />
@@ -118,11 +116,7 @@ function Navigator(props: NavigatorProps) {
               </ListItemText>
             </ListItem>
             {children.map(({ id: childId, icon, active }) => (
-              <ListItem
-                key={childId}
-                button
-                className={clsx(classes.item, active && classes.itemActiveItem)}
-              >
+              <ListItem key={childId} button className={clsx(classes.item, active && classes.itemActiveItem)}>
                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
                 <ListItemText
                   classes={{

@@ -1,39 +1,38 @@
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 const blueDark = '#18202c';
-const blueLight = '#009be5'
+const blueLight = '#009be5';
 
 let theme = createMuiTheme({
-    palette: {
-      primary: {
-        main: `${blueDark}`,
-      },
-      secondary: {
-        main: `${blueLight}`,
-      },
+  palette: {
+    primary: {
+      main: `${blueDark}`,
     },
-    typography: {
-      h5: {
-        fontWeight: 500,
-        fontSize: 26,
-        letterSpacing: 0.5,
-      },
-    },
-    shape: {
-      borderRadius: 8,
-    },
-    props: {
-      MuiTab: {
-        disableRipple: true,
-      },
-    },
-    mixins: {
-      toolbar: {
-        minHeight: 48,
-      },
+    secondary: {
+      main: `${blueLight}`,
     },
   },
-);
+  typography: {
+    h5: {
+      fontWeight: 500,
+      fontSize: 26,
+      letterSpacing: 0.5,
+    },
+  },
+  shape: {
+    borderRadius: 8,
+  },
+  props: {
+    MuiTab: {
+      disableRipple: true,
+    },
+  },
+  mixins: {
+    toolbar: {
+      minHeight: 48,
+    },
+  },
+});
 
 theme = {
   ...theme,

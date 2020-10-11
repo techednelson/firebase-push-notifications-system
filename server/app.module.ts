@@ -7,40 +7,27 @@ import { NextMiddleware, NextModule } from '@nestpress/next';
 import { typeOrmPostgresConfig } from './config/typeorm.config';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot(typeOrmPostgresConfig),
-    AuthModule,
-    FcmServerModule,
-    NextModule,
-  ],
+  imports: [TypeOrmModule.forRoot(typeOrmPostgresConfig), AuthModule, FcmServerModule, NextModule],
   controllers: [FcmAdminClientController],
   providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     // handle scripts
-    consumer
-      .apply(NextMiddleware)
-      .forRoutes({
-        path: '_next*',
-        method: RequestMethod.GET,
-      });
+    consumer.apply(NextMiddleware).forRoutes({
+      path: '_next*',
+      method: RequestMethod.GET,
+    });
 
     // handle other assets
-    consumer
-      .apply(NextMiddleware)
-      .forRoutes({
-        path: 'images/*',
-        method: RequestMethod.GET,
-      });
+    consumer.apply(NextMiddleware).forRoutes({
+      path: 'images/*',
+      method: RequestMethod.GET,
+    });
 
-    consumer
-      .apply(NextMiddleware)
-      .forRoutes({
-        path: 'favicon.ico',
-        method: RequestMethod.GET,
-      });
+    consumer.apply(NextMiddleware).forRoutes({
+      path: 'favicon.ico',
+      method: RequestMethod.GET,
+    });
   }
 }
-
-

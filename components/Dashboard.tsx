@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  createStyles,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core/styles';
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Hidden from '@material-ui/core/Hidden';
 import Navigator from './Navigator';
@@ -53,31 +49,31 @@ const Dashboard = (props: PaperbaseProps) => {
 
   return (
     <div className={classes.root}>
-        <CssBaseline />
-        <nav className={classes.drawer}>
-          <Hidden smUp implementation="js">
-            <Navigator
-              PaperProps={{ style: { width: drawerWidth } }}
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
-            />
-          </Hidden>
-          <Hidden xsDown implementation="css">
-            <Navigator PaperProps={{ style: { width: drawerWidth } }} />
-          </Hidden>
-        </nav>
-        <div className={classes.app}>
-          <Header onDrawerToggle={handleDrawerToggle} />
-          <main className={classes.main}>
-            <Content />
-          </main>
-          <footer className={classes.footer}>
-            <Copyright />
-          </footer>
-        </div>
+      <CssBaseline />
+      <nav className={classes.drawer}>
+        <Hidden smUp implementation="js">
+          <Navigator
+            PaperProps={{ style: { width: drawerWidth } }}
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+          />
+        </Hidden>
+        <Hidden xsDown implementation="css">
+          <Navigator PaperProps={{ style: { width: drawerWidth } }} />
+        </Hidden>
+      </nav>
+      <div className={classes.app}>
+        <Header onDrawerToggle={handleDrawerToggle} />
+        <main className={classes.main}>
+          <Content />
+        </main>
+        <footer className={classes.footer}>
+          <Copyright />
+        </footer>
       </div>
+    </div>
   );
-}
+};
 
 export default withStyles(styles)(Dashboard);

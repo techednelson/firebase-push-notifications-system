@@ -5,7 +5,7 @@ import { BaseEntity, Column, Entity, ObjectIdColumn, PrimaryGeneratedColumn, Uni
 export class User extends BaseEntity {
   // @ObjectIdColumn()
   // _id: string;
-  
+
   @PrimaryGeneratedColumn()
   id: number;
 

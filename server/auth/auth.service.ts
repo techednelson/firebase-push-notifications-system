@@ -12,7 +12,7 @@ export class AuthService {
     private userRepository: Repository<User>,
   ) {}
 
-  async signUp(authCredentialsDto : AuthCredentialsDto): Promise<void> {
+  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const { username, password } = authCredentialsDto;
     const user = await this.userRepository.findOne({ username });
     if (user) {
@@ -28,5 +28,4 @@ export class AuthService {
       console.log(error);
     }
   }
-
 }

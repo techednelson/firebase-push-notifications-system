@@ -7,6 +7,6 @@ import { Message } from './message.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Message])],
   providers: [FcmServerService],
-  controllers: [FcmServerController]
+  controllers: [FcmServerController],
 })
 export class FcmServerModule {}
