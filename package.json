@@ -1,24 +1,14 @@
 {
   "name": "firebase-push-notifications-system",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "Firebase Cloud Messaging server implemented with NestJS with SSR React ui application with NextJS",
+  "author": "Nelson Sandoval",
   "private": true,
   "license": "MIT",
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "dev": "ts-node --project tsconfig.build.json server/main.ts",
+    "build": "next build && tsc --project tsconfig.build.json",
+    "start": "cross-env NODE_ENV=production node .next/production-server/main.js"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
@@ -27,6 +17,8 @@
     "@nestjs/core": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/typeorm": "^7.1.4",
+    "@nestpress/next": "^1.2.3",
+    "@types/bcrypt": "^3.0.0",
     "@types/mongodb": "^3.5.27",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.1",
@@ -66,7 +58,7 @@
     "ts-loader": "^6.2.1",
     "ts-node": "9.0.0",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.7.4"
+    "typescript": "3.8.3"
   },
   "jest": {
     "moduleFileExtensions": [
