@@ -1,27 +1,15 @@
-import React from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        FCM Back Office
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Copyright from './Copyright';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -43,8 +31,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Login() {
+const Login = () => {
   const classes = useStyles();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const response = await axios.post('http://localhost:3000/auth/login', { username, password });
+    console.log(response);
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -56,7 +52,7 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form onSubmit={handleSubmit} className={classes.form} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -67,6 +63,7 @@ export default function Login() {
             name="username"
             autoComplete="username"
             autoFocus
+            onChange={e => setUsername(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -78,8 +75,15 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={e => setPassword(e.target.value)}
           />
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
             Sign In
           </Button>
         </form>
@@ -90,3 +94,5 @@ export default function Login() {
     </Container>
   );
 }
+
+export default Login;

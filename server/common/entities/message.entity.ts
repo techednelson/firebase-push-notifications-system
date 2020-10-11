@@ -17,6 +17,9 @@ export class Message {
   @Column()
   topic: string;
 
-  @Column()
-  createAt: string;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: string;
 }

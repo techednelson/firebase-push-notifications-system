@@ -1,8 +1,15 @@
-import { BaseEntity, Column, Entity, ObjectIdColumn, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ObjectIdColumn,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 @Unique(['username'])
-export class User extends BaseEntity {
+export class User {
   // @ObjectIdColumn()
   // _id: string;
 
@@ -14,7 +21,5 @@ export class User extends BaseEntity {
 
   @Column()
   password: string;
-
-  @Column()
-  salt: string;
+  
 }

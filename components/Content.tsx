@@ -8,7 +8,12 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  withStyles,
+  WithStyles,
+} from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
@@ -38,12 +43,17 @@ const styles = (theme: Theme) =>
 
 export interface ContentProps extends WithStyles<typeof styles> {}
 
-function Content(props: ContentProps) {
+const Content = (props: ContentProps) => {
   const { classes } = props;
 
   return (
     <Paper className={classes.paper}>
-      <AppBar className={classes.searchBar} position="static" color="default" elevation={0}>
+      <AppBar
+        className={classes.searchBar}
+        position="static"
+        color="default"
+        elevation={0}
+      >
         <Toolbar>
           <Grid container spacing={2} alignItems="center">
             <Grid item>
@@ -60,7 +70,11 @@ function Content(props: ContentProps) {
               />
             </Grid>
             <Grid item>
-              <Button variant="contained" color="secondary" className={classes.addUser}>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.addUser}
+              >
                 Add user
               </Button>
               <Tooltip title="Reload">

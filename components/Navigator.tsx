@@ -1,6 +1,11 @@
 import React from 'react';
 import clsx from 'clsx';
-import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  withStyles,
+  WithStyles,
+} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -83,15 +88,21 @@ const styles = (theme: Theme) =>
     },
   });
 
-export interface NavigatorProps extends Omit<DrawerProps, 'classes'>, WithStyles<typeof styles> {}
+export interface NavigatorProps
+  extends Omit<DrawerProps, 'classes'>,
+    WithStyles<typeof styles> {}
 
-function Navigator(props: NavigatorProps) {
+const Navigator = (props: NavigatorProps) => {
   const { classes, ...other } = props;
 
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
-        <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>Paperbase</ListItem>
+        <ListItem
+          className={clsx(classes.firebase, classes.item, classes.itemCategory)}
+        >
+          Paperbase
+        </ListItem>
         <ListItem className={clsx(classes.item, classes.itemCategory)}>
           <ListItemIcon className={classes.itemIcon}>
             <HomeIcon />
@@ -116,7 +127,11 @@ function Navigator(props: NavigatorProps) {
               </ListItemText>
             </ListItem>
             {children.map(({ id: childId, icon, active }) => (
-              <ListItem key={childId} button className={clsx(classes.item, active && classes.itemActiveItem)}>
+              <ListItem
+                key={childId}
+                button
+                className={clsx(classes.item, active && classes.itemActiveItem)}
+              >
                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
                 <ListItemText
                   classes={{
