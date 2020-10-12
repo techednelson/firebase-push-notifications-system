@@ -5,18 +5,25 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FcmAdminClientController } from './controllers/fcm-admin-client.controller';
+import { FcmAdminClientController } from './fcm-admin-client/fcm-admin-client.controller';
 import { NextMiddleware, NextModule } from '@nestpress/next';
-import { typeOrmPostgresConfig } from './config/typeorm.config';
-import { AuthService } from './services/auth.service';
-import rootUser from '../server/config/root-user';
-import { AuthController } from './controllers/auth.controller';
-import { FcmAdminServerController } from './controllers/fcm-admin-server.controller';
-import { FcmAdminServerService } from './services/fcm-admin-server.service';
+import { typeOrmPostgresConfig } from './common/config/typeorm.config';
+import { AuthService } from './auth/auth.service';
+import { AuthController } from './auth/auth.controller';
+import { FcmAdminServerController } from './fcm-admin-server/fcm-admin-server.controller';
+import { FcmAdminServerService } from './fcm-admin-server/fcm-admin-server.service';
 import { User } from './common/entities/user.entity';
-import { Message } from './common/entities/message.entity';
+import { Notification } from './common/entities/notification.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { AuthModule } from './auth/auth.module';
+import { FcmAdminServerModule } from './fcm-admin-server/fcm-admin-server.module';
+import { FcmAdminClientModule } from './fcm-admin-client/fcm-admin-client.module';
+
+const rootUser = {
+  username: 'admin',
+  password: 'superAdmin098',
+};
 
 @Module({
   imports: [
@@ -25,11 +32,14 @@ import { PassportModule } from '@nestjs/passport';
       secret: 'topSecret51',
       signOptions: {
         expiresIn: 3600,
-      }
+      },
     }),
     TypeOrmModule.forRoot(typeOrmPostgresConfig),
-    TypeOrmModule.forFeature([User, Message]),
-    NextModule
+    TypeOrmModule.forFeature([User, Notification]),
+    NextModule,
+    AuthModule,
+    FcmAdminClientModule,
+    FcmAdminServerModule,
   ],
   controllers: [
     AuthController,
@@ -39,9 +49,7 @@ import { PassportModule } from '@nestjs/passport';
   providers: [AuthService, FcmAdminServerService],
 })
 export class AppModule implements NestModule {
-  constructor(
-    private readonly authService: AuthService
-  ) {
+  constructor(private readonly authService: AuthService) {
     this.createRootUser();
   }
 

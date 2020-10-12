@@ -1,7 +1,7 @@
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class Message {
+export class Notification {
   // @ObjectIdColumn()
   // _id: string;
 

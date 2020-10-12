@@ -6,7 +6,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --project tsconfig.build.json server/main.ts",
+    "dev": "ts-node --project tsconfig.build.json server/main.ts",
     "build": "next build && tsc --project tsconfig.build.json",
     "start": "cross-env NODE_ENV=production node .next/production-server/main.js",
     "format": "prettier --write \"server/**/*.ts\" \"pages/**/*.tsx\" \"components/**/*.tsx\""
@@ -27,8 +27,8 @@
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
+    "isomorphic-unfetch": "^3.1.0",
     "mongodb": "^3.6.2",
-    "nest-next": "^9.2.0",
     "next": "^9.5.5",
     "next-cookies": "^2.0.3",
     "passport": "^0.4.1",
@@ -63,7 +63,6 @@
     "ts-jest": "26.2.0",
     "ts-loader": "^6.2.1",
     "ts-node": "9.0.0",
-    "ts-node-dev": "^1.0.0-pre.63",
     "tsconfig-paths": "^3.9.0",
     "typescript": "3.8.3"
   }

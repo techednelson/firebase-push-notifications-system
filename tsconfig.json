@@ -1,17 +1,16 @@
 {
-   "compilerOptions": {
+  "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "preserve",
-     "strictPropertyInitialization": false,
+    "strictPropertyInitialization": false,
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
     "strict": true,
-    "noEmit": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -20,7 +19,8 @@
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "incremental": true
+    "noEmit": true,
+    "incremental": false
   },
   "include": [
     "next-env.d.ts",

@@ -41,9 +41,9 @@ const styles = (theme: Theme) =>
     },
   });
 
-export interface ContentProps extends WithStyles<typeof styles> {}
+export interface ListProps extends WithStyles<typeof styles> {}
 
-const Content = (props: ContentProps) => {
+const List = (props: ListProps) => {
   const { classes } = props;
 
   return (
@@ -93,6 +93,6 @@ const Content = (props: ContentProps) => {
       </div>
     </Paper>
   );
-}
+};
 
-export default withStyles(styles)(Content);
+export default withStyles(styles)(List);

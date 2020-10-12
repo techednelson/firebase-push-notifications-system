@@ -12,8 +12,19 @@ export class FcmAdminClientController {
     await this.next.render('/index', req, res);
   }
 
-  // @Get()
-  // async showDashboardPage(@Req() req: IncomingMessage, @Res() res: ServerResponse): Promise<void>  {
-  //   await this.next.render('/dashboard', req, res);
-  // }
+  @Get('/list-notifications')
+  async showListNotificationsPage(
+    @Req() req: IncomingMessage,
+    @Res() res: ServerResponse,
+  ): Promise<void> {
+    await this.next.render('/list-notifications', req, res);
+  }
+
+  @Get('/notification')
+  async showNotificationsPage(
+    @Req() req: IncomingMessage,
+    @Res() res: ServerResponse,
+  ): Promise<void> {
+    await this.next.render('/notification', req, res);
+  }
 }

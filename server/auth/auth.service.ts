@@ -1,8 +1,12 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../common/entities/user.entity';
 import { Repository } from 'typeorm';
-import { AuthCredentialsDto } from '../common/dto/auth-credentials.dto';
+import { AuthCredentialsDto } from '../common/dtos/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../common/interfaces';
@@ -11,7 +15,7 @@ import { JwtPayload } from '../common/interfaces';
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
@@ -29,22 +33,26 @@ export class AuthService {
       console.log(error);
     }
   }
-  
-  async login(authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string }> {
+
+  async login(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ accessToken: string }> {
     const { username, password } = authCredentialsDto;
     const user = await this.userRepository.findOne({ username });
-    const isUserValid =  user && await bcrypt.compare(password, user.password);
-    
+    const isUserValid = user && (await bcrypt.compare(password, user.password));
+
     if (!isUserValid) {
-       throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
-    
+
     const payload: JwtPayload = { username };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
   }
-  
-  async createRootUser(authCredentialsDto: AuthCredentialsDto): Promise<string> {
+
+  async createRootUser(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<string> {
     const user = await this.userRepository.findOne({
       username: authCredentialsDto.username,
     });
@@ -52,6 +60,6 @@ export class AuthService {
       await this.signUp(authCredentialsDto);
       return `Root User ${authCredentialsDto.username} was created`;
     }
-    return `Root User ${authCredentialsDto.username} already exists in database`;
+    return ``;
   }
 }
