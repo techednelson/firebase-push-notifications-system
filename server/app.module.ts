@@ -21,8 +21,8 @@ import { FcmAdminServerModule } from './fcm-admin-server/fcm-admin-server.module
 import { FcmAdminClientModule } from './fcm-admin-client/fcm-admin-client.module';
 
 const rootUser = {
-  username: 'admin',
-  password: 'superAdmin098',
+  username: '',
+  password: '',
 };
 
 @Module({
