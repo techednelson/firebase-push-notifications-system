@@ -10,7 +10,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Copyright from './layout/Copyright';
 import axios from 'axios';
-import { tryCatch } from 'rxjs/internal-compatibility';
 import { useRouter } from 'next/router';
 
 const useStyles = makeStyles(theme => ({

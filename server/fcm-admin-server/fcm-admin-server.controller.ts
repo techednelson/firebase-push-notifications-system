@@ -1,32 +1,41 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SubscriptionRequestDto } from '../common/dtos/subscription-request.dto';
-import { NotificationRequestDto } from '../common/dtos/notification-request.dto';
+import { NotificationPayloadDto } from '../common/dtos/notification-payload.dto';
 import { FcmAdminServerService } from './fcm-admin-server.service';
-import { Notification } from '../common/entities/notification.entity';
+import { NotificationResponseDto } from '../common/dtos/notification-response.dto';
+import { NotificationTokenPayloadDto } from '../common/dtos/notification-token-payload.dto';
+import { NotificationType } from '../common/enums';
 
 @Controller('fcm-server')
 export class FcmAdminServerController {
   constructor(private readonly fmAdminServerService: FcmAdminServerService) {}
 
-  // @Get('/all')
-  // async findAll(): Promise<Notification[]> {
-  //   await this.fmAdminServerService.findAll();
-  // }
-  //
-  // @Post('/save')
-  // async save(@Body() notificationRequestDto: NotificationRequestDto): Promise<Notification> {
-  //
-  // }
-  //
-  //  @Get('/:id')
-  //  async findById(@Param() id: number): Promise<Notification> {
-  //
-  // }
+  @Get('/notifications')
+  async findAll(): Promise<NotificationResponseDto[]> {
+    return await this.fmAdminServerService.findAll();
+  }
+  
+ @Post('/save')
+  async save(@Body() notificationPayloadDto: {
+    title: string,
+    body: string,
+    topic: string,
+    user: string,
+    type: NotificationType
+  }): Promise<boolean> {
+     const { title, body, topic, user, type } = notificationPayloadDto;
+     return await this.fmAdminServerService.save(title, body, topic, user, type);
+  }
+  
+  @Get('/notification/:id')
+   async findById(@Param('id') id: number): Promise<NotificationResponseDto | null> {
+    return this.fmAdminServerService.findById(id);
+  }
 
-  // @Delete('/:id')
-  // async delete(@Param() id: number): Promise<void> {
-  //
-  // }
+  @Delete('notification/:id')
+  async deleteById(@Param('id') id: number): Promise<void> {
+    await this.fmAdminServerService.deleteById(id);
+  }
 
   @Post('/subscribe')
   async subscribeToTopic(
@@ -48,19 +57,28 @@ export class FcmAdminServerController {
 
   @Post('/token')
   async sendPushNotificationToDevice(
-    @Body() notificationRequestDto: NotificationRequestDto,
+    @Body() notificationTokenPayloadDto: NotificationTokenPayloadDto,
   ): Promise<string> {
     return await this.fmAdminServerService.sendPushNotificationToDevice(
-      notificationRequestDto,
+      notificationTokenPayloadDto,
+    );
+  }
+  
+  @Post('/multicast')
+  async sendMulticastPushNotification(
+    @Body() notificationTokenPayloadDto: NotificationTokenPayloadDto,
+  ): Promise<string> {
+    return await this.fmAdminServerService.sendMulticastPushNotification(
+      notificationTokenPayloadDto,
     );
   }
 
   @Post('/topic')
   async sendPushNotificationToTopic(
-    @Body() notificationRequestDto: NotificationRequestDto,
+    @Body() notificationPayloadDto: NotificationPayloadDto,
   ): Promise<string> {
     return await this.fmAdminServerService.sendPushNotificationToTopic(
-      notificationRequestDto,
+      notificationPayloadDto,
     );
   }
 }

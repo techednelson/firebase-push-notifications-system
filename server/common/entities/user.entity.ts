@@ -11,7 +11,7 @@ import * as bcrypt from 'bcrypt';
 @Unique(['username'])
 export class User {
   // @ObjectIdColumn()
-  // _id: string;
+  // _id: number;
 
   @PrimaryGeneratedColumn()
   id: number;

@@ -1,12 +1,13 @@
-import { Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { NotificationType } from '../enums';
 
 @Entity()
 export class Notification {
   // @ObjectIdColumn()
-  // _id: string;
-
-  @PrimaryColumn()
-  id: string;
+  // _id: number;
+  
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   title: string;
@@ -15,11 +16,14 @@ export class Notification {
   body: string;
 
   @Column()
+  type: NotificationType;
+  
+  @Column()
   topic: string;
-
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  
+  @Column()
+  user: string;
+  
+  @Column()
   createdAt: string;
 }

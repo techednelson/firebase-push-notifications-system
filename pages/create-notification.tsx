@@ -2,7 +2,7 @@ import React from 'react';
 import Dashboard from '../components/layout/Dashboard';
 import List from '../components/List';
 
-const Notification = () => {
+const CreateNotification = () => {
   return (
     <Dashboard>
       <List />
@@ -10,4 +10,4 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default CreateNotification;
