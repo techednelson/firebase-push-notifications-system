@@ -4,13 +4,14 @@ import { AuthCredentialsDto } from '../common/dtos/auth-credentials.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
+  constructor(private readonly authService: AuthService) {
+  }
+  
   @Post('/signup')
   async signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
     return await this.authService.signUp(authCredentialsDto);
   }
-
+  
   @Post('/login')
   async login(
     @Body() authCredentialsDto: AuthCredentialsDto,

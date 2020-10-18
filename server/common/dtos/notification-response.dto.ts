@@ -1,4 +1,4 @@
-import { NotificationType } from '../enums';
+import { NotificationStatus, NotificationType } from '../enums';
 
 export class NotificationResponseDto {
   id: number;
@@ -7,5 +7,6 @@ export class NotificationResponseDto {
   type: NotificationType;
   topic: string;
   user: string;
-  createdAt: string;
+  createdOn: string;
+  status: NotificationStatus;
 }

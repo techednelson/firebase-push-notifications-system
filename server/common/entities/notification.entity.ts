@@ -1,5 +1,5 @@
-import { Column, Entity, ObjectIdColumn, PrimaryGeneratedColumn } from 'typeorm';
-import { NotificationType } from '../enums';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { NotificationStatus, NotificationType } from '../enums';
 
 @Entity()
 export class Notification {
@@ -8,13 +8,13 @@ export class Notification {
   
   @PrimaryGeneratedColumn()
   id: number;
-
+  
   @Column()
   title: string;
-
+  
   @Column()
   body: string;
-
+  
   @Column()
   type: NotificationType;
   
@@ -25,5 +25,8 @@ export class Notification {
   user: string;
   
   @Column()
-  createdAt: string;
+  createdOn: string;
+  
+  @Column()
+  status: NotificationStatus;
 }

@@ -37,7 +37,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const classes = useStyles();
-
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -53,7 +53,7 @@ const Login = () => {
       console.log(e);
     }
   };
-
+  
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

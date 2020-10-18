@@ -5,5 +5,5 @@ export class Notification {
   type: string;
   topic: string;
   user: string;
-  createdAt: string;
+  createdOn: string;
 }

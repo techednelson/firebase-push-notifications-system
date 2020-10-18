@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
 import { NotificationType } from '../enums';
 
 export class NotificationPayloadDto {

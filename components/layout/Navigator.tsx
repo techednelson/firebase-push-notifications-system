@@ -1,11 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
-import {
-  createStyles,
-  Theme,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core/styles';
+import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -13,17 +8,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import CloudIcon from '@material-ui/icons/Cloud';
+import GroupIcon from '@material-ui/icons/Group';
 import { Omit } from '@material-ui/types';
-
-const categories = [
-  {
-    id: 'Admin',
-    children: [
-      { id: 'Cloud Messaging', icon: <NotificationsIcon />, active: true },
-    ],
-  },
-];
+import Link from 'next/link';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -69,11 +57,21 @@ const styles = (theme: Theme) =>
 
 export interface NavigatorProps
   extends Omit<DrawerProps, 'classes'>,
-    WithStyles<typeof styles> {}
+    WithStyles<typeof styles> {
+}
+
+const createCategories = (activeLink: number) => [{
+  id: 'Admin',
+  children: [
+    { index: 0, id: 'Topics', url: '/list-notifications', icon: <CloudIcon />, active: activeLink === 0 },
+    { index: 1, id: 'Subscribers', url: '/list-subscribers', icon: <GroupIcon />, active: activeLink === 1 },
+  ],
+}];
 
 const Navigator = (props: NavigatorProps) => {
   const { classes, ...other } = props;
-
+  const [categories, setCategories] = useState(createCategories(0));
+  
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
@@ -105,21 +103,24 @@ const Navigator = (props: NavigatorProps) => {
                 {id}
               </ListItemText>
             </ListItem>
-            {children.map(({ id: childId, icon, active }) => (
-              <ListItem
-                key={childId}
-                button
-                className={clsx(classes.item, active && classes.itemActiveItem)}
-              >
-                <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
-                <ListItemText
-                  classes={{
-                    primary: classes.itemPrimary,
-                  }}
+            {children.map(({ index, id: childId, url, icon, active }) => (
+              <Link href={url}>
+                <ListItem
+                  key={childId}
+                  button
+                  className={clsx(classes.item, active && classes.itemActiveItem)}
+                  onClick={() => setCategories(createCategories(index))}
                 >
-                  {childId}
-                </ListItemText>
-              </ListItem>
+                  <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
+                  <ListItemText
+                    classes={{
+                      primary: classes.itemPrimary,
+                    }}
+                  >
+                    {childId}
+                  </ListItemText>
+                </ListItem>
+              </Link>
             ))}
             <Divider className={classes.divider} />
           </React.Fragment>

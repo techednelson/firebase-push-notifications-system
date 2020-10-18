@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Hidden from '@material-ui/core/Hidden';
@@ -42,12 +42,12 @@ export interface DashboardProps extends WithStyles<typeof styles> {
 
 const Dashboard = (props: DashboardProps) => {
   const { classes } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
+  
   return (
     <React.Fragment>
       <section className={classes.root}>
@@ -67,7 +67,9 @@ const Dashboard = (props: DashboardProps) => {
         </nav>
         <div className={classes.app}>
           <Header onDrawerToggle={handleDrawerToggle} />
-          <main className={classes.main}>{props.children}</main>
+          <main className={classes.main}>
+            {props.children}
+          </main>
           <footer className={classes.footer}>
             <Copyright />
           </footer>

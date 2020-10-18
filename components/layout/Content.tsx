@@ -1,24 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import {
-  createStyles,
-  Theme,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core/styles';
+import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import axios from 'axios';
-import { Notification } from '../pages/models/notification';
-import EnhancedTable from './material-ui/EnhancedTable';
+import Link from 'next/link';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -36,7 +28,7 @@ const styles = (theme: Theme) =>
     block: {
       display: 'block',
     },
-    addUser: {
+    addNotification: {
       marginRight: theme.spacing(1),
     },
     contentWrapper: {
@@ -44,18 +36,13 @@ const styles = (theme: Theme) =>
     },
   });
 
-export interface ListProps extends WithStyles<typeof styles> {}
+export interface ContentProps extends WithStyles<typeof styles> {
+  children: any;
+}
 
-const List = (props: ListProps) => {
+const Content = (props: ContentProps) => {
   const { classes } = props;
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   
-  useEffect(() => {
-    axios.get('http://localhost:3000/fcm-server/notifications')
-      .then( ({ data }) => data && setNotifications(data))
-      .catch((error) => console.log(error))
-  }, []);
-
   return (
     <Paper className={classes.paper}>
       <AppBar
@@ -80,13 +67,15 @@ const List = (props: ListProps) => {
               />
             </Grid>
             <Grid item>
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.addUser}
-              >
-                Add user
-              </Button>
+              <Link href="/compose-notification">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  className={classes.addNotification}
+                >
+                  New notification
+                </Button>
+              </Link>
               <Tooltip title="Reload">
                 <IconButton>
                   <RefreshIcon className={classes.block} color="inherit" />
@@ -97,13 +86,10 @@ const List = (props: ListProps) => {
         </Toolbar>
       </AppBar>
       <div className={classes.contentWrapper}>
-        {/*<Typography color="textSecondary" align="center">*/}
-        {/*  No users for this project yet*/}
-        {/*</Typography>*/}
-        <EnhancedTable />
+        {props.children}
       </div>
     </Paper>
   );
 };
 
-export default withStyles(styles)(List);
+export default withStyles(styles)(Content);
