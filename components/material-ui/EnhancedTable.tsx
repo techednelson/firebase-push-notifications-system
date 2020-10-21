@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { createStyles, lighten, makeStyles, Theme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -20,6 +20,8 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { Notification } from '../../pages/common/models/notification';
 import { HeadCell } from '../../pages/common/interfaces';
 import { Subscriber } from '../../pages/common/models/subscriber';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -55,7 +57,7 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 interface EnhancedTableHeadProps {
   classes: ReturnType<typeof useStyles>;
   numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Notification) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Notification | keyof Subscriber) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
@@ -65,7 +67,7 @@ interface EnhancedTableHeadProps {
 
 const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
   const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property: any) => (event: React.MouseEvent<unknown>) => {
+  const createSortHandler = (property: keyof Notification | keyof Subscriber) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
   
@@ -77,20 +79,21 @@ const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts' }}
+            inputProps={{ 'aria-label': 'select all notifications' }}
           />
         </TableCell>
         {props.headCells.map((headCell) => (
           <TableCell
-            sortDirection={orderBy === headCell.label ? order : false}
+            key={headCell.id}
+            sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
-              active={orderBy === headCell.label}
-              direction={orderBy === headCell.label ? order : 'asc'}
-              onClick={createSortHandler(headCell.label)}
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
-              {orderBy === headCell.label ? (
+              {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </span>
@@ -127,11 +130,25 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  selected: number[];
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, selected } = props;
+  const router = useRouter()
+  
+  const deleteSelected = () => {
+    try {
+      const domain = router.pathname === '/list-notifications'
+        ? 'notifications'
+        : 'subscribers';
+      selected.forEach(async id => await axios.delete(`http://localhost:3000/fcm-${domain}/${id}`));
+      router.reload();
+    } catch (error) {
+      console.log('There was issue deleting the selected elements', error);
+    }
+  };
   
   return (
     <Toolbar
@@ -148,7 +165,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" onClick={deleteSelected}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -196,13 +213,13 @@ interface EnhancedTableProps {
 
 const EnhancedTable = (props: EnhancedTableProps) => {
   const classes = useStyles();
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Notification>('id');
-  const [selected, setSelected] = React.useState<number[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Notification | keyof Subscriber>('id');
+  const [selected, setSelected] = useState<number[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Notification) => {
+  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Notification | keyof Subscriber) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -210,7 +227,7 @@ const EnhancedTable = (props: EnhancedTableProps) => {
   
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = props.rows.map((n: any) => n.id);
+      const newSelecteds = props.rows.map((n: Notification | Subscriber) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -251,18 +268,18 @@ const EnhancedTable = (props: EnhancedTableProps) => {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
   
   const createRow = (row: any) => {
-    return Object.keys(row).map((key) => {
+    return Object.keys(row).map((key, index) => {
       if (key === 'subscribed') {
-        return <TableCell>{row[key] ? 'Yes' : 'No'}</TableCell>
+        return <TableCell key={index}>{row[key] ? 'Yes' : 'No'}</TableCell>
       }
-      return <TableCell>{row[key]}</TableCell>
+      return <TableCell key={index}>{row[key]}</TableCell>
     });
   };
   
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected} />
         <TableContainer>
           <Table
             className={classes.table}

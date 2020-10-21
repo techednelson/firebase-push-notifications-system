@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
@@ -11,6 +11,8 @@ import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/s
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Link from 'next/link';
+import Router from 'next/router';
+import { NextContext } from '../context/NextContext';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -42,6 +44,7 @@ export interface ContentProps extends WithStyles<typeof styles> {
 
 const Content = (props: ContentProps) => {
   const { classes } = props;
+  const { setSearchWord } = useContext(NextContext);
   
   return (
     <Paper className={classes.paper}>
@@ -58,8 +61,9 @@ const Content = (props: ContentProps) => {
             </Grid>
             <Grid item xs>
               <TextField
+                onChange={(e) => setSearchWord(e.target.value)}
                 fullWidth
-                placeholder="Search by email address, phone number, or user UID"
+                placeholder="Search by username, topic, title or message"
                 InputProps={{
                   disableUnderline: true,
                   className: classes.searchInput,
@@ -77,7 +81,7 @@ const Content = (props: ContentProps) => {
                 </Button>
               </Link>
               <Tooltip title="Reload">
-                <IconButton>
+                <IconButton onClick={() => Router.reload()}>
                   <RefreshIcon className={classes.block} color="inherit" />
                 </IconButton>
               </Tooltip>

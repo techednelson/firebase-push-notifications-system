@@ -1,9 +1,12 @@
+import { NotificationStatus, NotificationType } from '../enums';
+
 export class Notification {
   id: number;
   title: string;
   body: string;
-  type: string;
+  type: NotificationType;
   topic: string;
-  user: string;
+  username: string;
   createdOn: string;
+  status: NotificationStatus;
 }

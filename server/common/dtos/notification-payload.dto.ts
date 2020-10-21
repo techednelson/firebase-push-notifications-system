@@ -23,5 +23,5 @@ export class NotificationPayloadDto {
   topic: string;
   
   @IsString()
-  user: string;
+  username: string;
 }

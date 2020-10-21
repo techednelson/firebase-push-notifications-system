@@ -6,7 +6,7 @@ export class NotificationResponseDto {
   body: string;
   type: NotificationType;
   topic: string;
-  user: string;
+  username: string;
   createdOn: string;
   status: NotificationStatus;
 }

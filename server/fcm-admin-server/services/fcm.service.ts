@@ -71,20 +71,20 @@ export class FcmService {
     if (notificationTokenPayloadDto.tokens.length > 1) {
       throw new BadRequestException('Number of token must be equal to 1');
     }
-    const { title, body, tokens, topic, user, type } = notificationTokenPayloadDto;
+    const { title, body, tokens, topic, username, type } = notificationTokenPayloadDto;
     try {
       const message: Message = {
         data: { title, body },
         token: tokens[0],
       };
       await admin.messaging().send(message);
-      await this.notificationsService.save(title, body, topic, user, type, NotificationStatus.COMPLETED);
-      return `Push notification was sent to ${user}`;
+      await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.COMPLETED);
+      return `Push notification was sent to ${username}`;
     } catch (error) {
-      await this.notificationsService.save(title, body, topic, user, type, NotificationStatus.FAILED);
-      console.log(`Error sending push notification to user: ${user}`, error);
+      await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.FAILED);
+      console.log(`Error sending push notification to username: ${username}`, error);
       throw new InternalServerErrorException(
-        `Error sending push notification to user: ${user}`,
+        `Error sending push notification to username: ${username}`,
       );
     }
   }
@@ -92,17 +92,17 @@ export class FcmService {
   async sendMulticastPushNotification(
     notificationTokenPayloadDto: NotificationTokenPayloadDto,
   ): Promise<string> {
-    const { title, body, tokens, topic, user, type } = notificationTokenPayloadDto;
+    const { title, body, tokens, topic, username, type } = notificationTokenPayloadDto;
     try {
       const message: MulticastMessage = {
         data: { title, body },
         tokens,
       };
       await admin.messaging().sendMulticast(message);
-      await this.notificationsService.save(title, body, topic, user, type, NotificationStatus.COMPLETED);
+      await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.COMPLETED);
       return `Multicast push notification was sent`;
     } catch (error) {
-      await this.notificationsService.save(title, body, topic, user, type, NotificationStatus.FAILED);
+      await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.FAILED);
       console.log('Error sending multicast push notification', error);
       throw new InternalServerErrorException(
         `Error sending multicast push notification`,
@@ -113,17 +113,17 @@ export class FcmService {
   async sendPushNotificationToTopic(
     notificationPayloadDto: NotificationPayloadDto,
   ): Promise<string> {
-    const { title, body, type, topic, user } = notificationPayloadDto;
+    const { title, body, type, topic, username } = notificationPayloadDto;
     try {
       const message: Message = {
         data: { title, body },
         topic,
       };
       await admin.messaging().send(message);
-      await this.notificationsService.save(title, body, topic, user, type, NotificationStatus.COMPLETED);
+      await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.COMPLETED);
       return `Push notification was sent to topic: ${topic}`;
     } catch (error) {
-      await this.notificationsService.save(title, body, topic, user, type, NotificationStatus.FAILED);
+      await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.FAILED);
       console.log(`Error sending push notification to topic: ${topic}`, error);
       throw new InternalServerErrorException(
         `Error sending push notification to topic: ${topic}`,

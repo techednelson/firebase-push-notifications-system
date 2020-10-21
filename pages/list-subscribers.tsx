@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';;
+import React, { useContext, useEffect, useState } from 'react';;
 import axios from 'axios';
 import Dashboard from '../components/layout/Dashboard';
 import Content from '../components/layout/Content';
@@ -6,23 +6,48 @@ import EnhancedTable from '../components/material-ui/EnhancedTable';
 import { Subscriber } from './common/models/subscriber';
 import { HeadCell } from './common/interfaces';
 import { Typography } from '@material-ui/core';
+import { NextContext } from '../components/context/NextContext';
 
 const headCells: HeadCell[] = [
-  { label: 'ID' },
-  { label: 'Username' },
-  { label: 'Token' },
-  { label: 'Topic' },
-  { label: 'Subscribed' },
+  { id: 'id', label: 'ID' },
+  { id: 'username', label: 'Username' },
+  { id: 'token', label: 'Token' },
+  { id: 'topic', label: 'Topic' },
+  { id: 'subscribed', label: 'Subscribed' },
 ];
 
 const ListSubscribers = () => {
+  const { searchWord } = useContext(NextContext);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [subscribersBackup, setSubscribersBackup] = useState<Subscriber[]>([]);
   
   useEffect(() => {
     axios.get('http://localhost:3000/fcm-subscribers')
-      .then(({ data }) => data && setSubscribers(data))
+      .then(({ data }) => {
+        if (data) {
+          setSubscribers(data);
+          setSubscribersBackup(data)
+        }
+      })
       .catch((error) => console.log(error));
   }, []);
+  
+  useEffect(() => {
+    let filtered: Subscriber[] = [];
+    if (searchWord.length >= 3) {
+      filtered = subscribers.filter(subscriber => {
+        if (
+          subscriber.username.includes(searchWord) ||
+          subscriber.topic.includes(searchWord)
+        ) {
+          return subscriber;
+        }
+      });
+    } else {
+      filtered = subscribersBackup;
+    }
+    setSubscribers(filtered);
+  }, [searchWord]);
   
   return (
     <Dashboard>

@@ -22,7 +22,7 @@ export class Notification {
   topic: string;
   
   @Column()
-  user: string;
+  username: string;
   
   @Column()
   createdOn: string;

@@ -28,4 +28,12 @@ export class FcmAdminClientController {
   ): Promise<void> {
     await this.next.render('/notification', req, res);
   }
+  
+  @Get('/list-subscribers')
+  async showListSubscribersPage(
+    @Req() req: IncomingMessage,
+    @Res() res: ServerResponse,
+  ): Promise<void> {
+    await this.next.render('/list-subscribers', req, res);
+  }
 }

@@ -23,7 +23,7 @@ export class NotificationsService {
     title: string,
     body: string,
     topic: string,
-    user: string,
+    username: string,
     type: NotificationType,
     status: NotificationStatus,
   ): Promise<boolean> {
@@ -33,7 +33,7 @@ export class NotificationsService {
     notification.title = title;
     notification.body = body;
     notification.type = type;
-    notification.user = user;
+    notification.username = username;
     notification.status = status;
     try {
       await this.notificationRepository.save(notification);

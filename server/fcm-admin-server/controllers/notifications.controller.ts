@@ -19,12 +19,12 @@ export class NotificationsController {
     title: string,
     body: string,
     topic: string,
-    user: string,
+    username: string,
     type: NotificationType,
     status: NotificationStatus
   }): Promise<boolean> {
-    const { title, body, topic, user, type, status } = notificationPayloadDto;
-    return await this.notificationsService.save(title, body, topic, user, type, status);
+    const { title, body, topic, username, type, status } = notificationPayloadDto;
+    return await this.notificationsService.save(title, body, topic, username, type, status);
   }
   
   @Get('/:id')

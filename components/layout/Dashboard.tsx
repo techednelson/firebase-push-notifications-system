@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Hidden from '@material-ui/core/Hidden';
@@ -6,6 +6,7 @@ import Navigator from './Navigator';
 import Header from './Header';
 import theme from '../theme/theme';
 import Copyright from './Copyright';
+import { NextContext, NextContextProvider } from '../context/NextContext';
 
 const drawerWidth = 256;
 
