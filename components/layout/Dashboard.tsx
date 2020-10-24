@@ -6,7 +6,7 @@ import Navigator from './Navigator';
 import Header from './Header';
 import theme from '../theme/theme';
 import Copyright from './Copyright';
-import { NextContext, NextContextProvider } from '../context/NextContext';
+import { SearchWordContext, SearchWordContextProvider } from '../context/SearchWordContext';
 
 const drawerWidth = 256;
 

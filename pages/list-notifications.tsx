@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Dashboard from '../components/layout/Dashboard';
 import Content from '../components/layout/Content';
-import EnhancedTable from '../components/material-ui/EnhancedTable';
+import EnhancedTable from '../components/EnhancedTable';
 import { HeadCell } from './common/interfaces';
 import axios from 'axios';
 import { Notification } from './common/models/notification';
 import { Typography } from '@material-ui/core';
-import { NextContext } from '../components/context/NextContext';
+import { SearchWordContext } from '../components/context/SearchWordContext';
 
 const headCells: HeadCell[] = [
   { id: 'id', label: 'ID' },
@@ -20,7 +20,7 @@ const headCells: HeadCell[] = [
 ];
 
 const ListNotifications = () => {
-  const { searchWord } = useContext(NextContext);
+  const { searchWord } = useContext(SearchWordContext);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsBackup, setNotificationsBackup] = useState<Notification[]>([]);
   

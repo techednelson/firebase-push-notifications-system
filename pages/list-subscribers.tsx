@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';;
 import axios from 'axios';
 import Dashboard from '../components/layout/Dashboard';
 import Content from '../components/layout/Content';
-import EnhancedTable from '../components/material-ui/EnhancedTable';
+import EnhancedTable from '../components/EnhancedTable';
 import { Subscriber } from './common/models/subscriber';
 import { HeadCell } from './common/interfaces';
 import { Typography } from '@material-ui/core';
-import { NextContext } from '../components/context/NextContext';
+import { SearchWordContext } from '../components/context/SearchWordContext';
 
 const headCells: HeadCell[] = [
   { id: 'id', label: 'ID' },
@@ -17,7 +17,7 @@ const headCells: HeadCell[] = [
 ];
 
 const ListSubscribers = () => {
-  const { searchWord } = useContext(NextContext);
+  const { searchWord } = useContext(SearchWordContext);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [subscribersBackup, setSubscribersBackup] = useState<Subscriber[]>([]);
   

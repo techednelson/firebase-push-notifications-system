@@ -17,9 +17,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { Notification } from '../../pages/common/models/notification';
-import { HeadCell } from '../../pages/common/interfaces';
-import { Subscriber } from '../../pages/common/models/subscriber';
+import { Notification } from '../pages/common/models/notification';
+import { HeadCell } from '../pages/common/interfaces';
+import { Subscriber } from '../pages/common/models/subscriber';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 

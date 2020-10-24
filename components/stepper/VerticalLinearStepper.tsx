@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -7,37 +7,38 @@ import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import StepOne from './StepOne';
+import { stepperService } from '../../pages/services/stepper-service';
+import { StepperStatus } from '../../pages/common/enums';
+import { Payload } from '../../pages/common/models/payload';
+import { StepperMessage } from '../../pages/common/interfaces';
+import StepTwo from './StepTwo';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
     },
+    resetContainer: {
+      padding: theme.spacing(3),
+    },
     button: {
       marginTop: theme.spacing(1),
       marginRight: theme.spacing(1),
-    },
-    actionsContainer: {
-      marginBottom: theme.spacing(2),
-    },
-    resetContainer: {
-      padding: theme.spacing(3),
     },
   }),
 );
 
 function getSteps() {
-  return ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+  return ['Notification', 'Target', 'Send now'];
 }
 
 function getStepContent(step: number) {
   switch (step) {
     case 0:
-      return `For each ad campaign that you create, you can control how much
-              you're willing to spend on clicks and conversions, which networks
-              and geographical locations you want your ads to show on, and more.`;
+      return <StepOne />;
     case 1:
-      return 'An ad group contains one or more ads which target a shared set of keywords.';
+      return <StepTwo />;
     case 2:
       return `Try out different ad text to see what brings in the most customers,
               and learn how to enhance your ads using features like ad extensions.
@@ -50,11 +51,24 @@ function getStepContent(step: number) {
 
 export default function VerticalLinearStepper() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [payload, setPayload] = useState<Payload>(new Payload());
   const steps = getSteps();
   
+  useEffect(() => {
+    const subscription$ = handleNext();
+    return () => subscription$.unsubscribe();
+  }, []);
+  
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    return stepperService.getMessage().subscribe((message: StepperMessage) => {
+      console.log(message);
+      if (message.status === StepperStatus.VALID) {
+        const { title, body } = message.payload;
+        setPayload({ ...payload, title, body });
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      }
+    })
   };
   
   const handleBack = () => {
@@ -73,25 +87,6 @@ export default function VerticalLinearStepper() {
             <StepLabel>{label}</StepLabel>
             <StepContent>
               <Typography>{getStepContent(index)}</Typography>
-              <div className={classes.actionsContainer}>
-                <div>
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    className={classes.button}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button>
-                </div>
-              </div>
             </StepContent>
           </Step>
         ))}

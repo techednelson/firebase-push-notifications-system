@@ -12,7 +12,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Link from 'next/link';
 import Router from 'next/router';
-import { NextContext } from '../context/NextContext';
+import { SearchWordContext } from '../context/SearchWordContext';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -44,7 +44,7 @@ export interface ContentProps extends WithStyles<typeof styles> {
 
 const Content = (props: ContentProps) => {
   const { classes } = props;
-  const { setSearchWord } = useContext(NextContext);
+  const { setSearchWord } = useContext(SearchWordContext);
   
   return (
     <Paper className={classes.paper}>

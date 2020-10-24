@@ -4,7 +4,7 @@ import { AppProps } from 'next/app';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../components/theme/theme';
-import { NextContextProvider } from '../components/context/NextContext';
+import { SearchWordContextProvider } from '../components/context/SearchWordContext';
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -24,11 +24,11 @@ export default function MyApp(props: AppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>
-        <NextContextProvider>
+        <SearchWordContextProvider>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           <Component {...pageProps} />
-        </NextContextProvider>
+        </SearchWordContextProvider>
       </ThemeProvider>
     </React.Fragment>
   );

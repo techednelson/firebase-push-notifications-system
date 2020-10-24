@@ -21,12 +21,12 @@ export class FcmAdminClientController {
     await this.next.render('/list-notifications', req, res);
   }
   
-  @Get('/notification')
+  @Get('/compose-notification')
   async showNotificationsPage(
     @Req() req: IncomingMessage,
     @Res() res: ServerResponse,
   ): Promise<void> {
-    await this.next.render('/notification', req, res);
+    await this.next.render('/compose-notification', req, res);
   }
   
   @Get('/list-subscribers')

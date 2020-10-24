@@ -9,3 +9,10 @@ export enum NotificationStatus {
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED'
 }
+
+export enum StepperStatus {
+  INITIAL = 'INITIAL',
+  VALIDATING = 'VALIDATING',
+  VALID = 'VALID',
+  INVALID = 'INVALID',
+}
