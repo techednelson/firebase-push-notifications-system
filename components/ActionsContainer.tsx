@@ -14,19 +14,23 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const ActionsContainer = () => {
+interface ActionsProps {
+  isBackBtn: boolean;
+}
+
+const ActionsContainer = (props: ActionsProps) => {
   const classes = useStyles();
   return (
     <div className={classes.actionsContainer}>
       <div>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          className={classes.button}
-        >
-          Back
-        </Button>
+        {props.isBackBtn ? (
+          <Button
+            type="submit"
+            className={classes.button}
+          >
+            Back
+          </Button>
+        ) : null}
         <Button
           variant="contained"
           color="primary"

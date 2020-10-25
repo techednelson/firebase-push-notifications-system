@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -10,6 +10,8 @@ import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
 import ActionsContainer from '../ActionsContainer';
+import axios from 'axios';
+import { Subscriber } from '../../pages/common/models/subscriber';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,10 +24,25 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+interface RenderRowProps extends ListChildComponentProps {
+
+}
+
 const StepTwo = () => {
   const classes = useStyles();
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [value, setValue] = useState<string>('users');
   const [checked, setChecked] = useState<number[]>([0]);
+  
+  useEffect(() => {
+    axios.get('http://localhost:3000/fcm-subscribers')
+      .then(({ data }) => {
+        if (data) {
+          setSubscribers(data);
+        }
+      })
+      .catch((error) => console.log(error));
+  }, []);
   
   const handleToggle = (value: number) => () => {
     const currentIndex = checked.indexOf(value);
@@ -41,8 +58,9 @@ const StepTwo = () => {
   };
   
   const renderRow = (props: ListChildComponentProps) => {
-    const { index, style } = props;
-    const labelId = `checkbox-list-label-${value}`;
+    const { index, style, data } = props;
+    const labelId = `checkbox-list-label-${index}`;
+    const item = data[index];
     return (
       <ListItem key={index} style={style} role={undefined} dense button onClick={handleToggle(index)}>
         <ListItemIcon>
@@ -54,7 +72,7 @@ const StepTwo = () => {
             inputProps={{ 'aria-labelledby': labelId }}
           />
         </ListItemIcon>
-        <ListItemText id={ `checkbox-list-secondary-label-${index}`} primary={`Line item ${index + 1}`} />
+        <ListItemText id={ `checkbox-list-secondary-label-${index}`} primary={`${item.username}`} />
       </ListItem>
     );
   }
@@ -70,11 +88,11 @@ const StepTwo = () => {
         <BottomNavigationAction label="Topics" value="topics" icon={<CloudIcon />} />
       </BottomNavigation>
       <div className={classes.root}>
-        <FixedSizeList height={400} width={300} itemSize={46} itemCount={200}>
+        <FixedSizeList height={400} width={300} itemSize={46} itemCount={subscribers.length} itemData={subscribers}>
           {renderRow}
         </FixedSizeList>
       </div>
-      <ActionsContainer />
+      <ActionsContainer isBackBtn={true} />
     </>
   );
 };

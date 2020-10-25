@@ -92,7 +92,7 @@ const StepOne = () => {
         variant="outlined"
         onChange={handleInput}
       />
-      <ActionsContainer />
+      <ActionsContainer isBackBtn={false} />
     </form>
  );
 };
