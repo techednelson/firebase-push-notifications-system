@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import Dashboard from '../components/layout/Dashboard';
 import Content from '../components/layout/Content';
 import EnhancedTable from '../components/EnhancedTable';
-import { HeadCell } from './common/interfaces';
+import { HeadCell } from '../components/common/interfaces';
 import axios from 'axios';
-import { Notification } from './common/models/notification';
+import { Notification } from '../components/common/models/notification';
 import { Typography } from '@material-ui/core';
 import { SearchWordContext } from '../components/context/SearchWordContext';
 

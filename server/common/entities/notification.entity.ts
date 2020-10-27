@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { NotificationStatus, NotificationType } from '../enums';
 
-@Entity()
+@Entity('notification')
 export class Notification {
   // @ObjectIdColumn()
   // _id: number;

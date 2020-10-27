@@ -8,16 +8,16 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import StepOne from './StepOne';
-import { stepperService } from '../../pages/services/stepper-service';
-import { StepperStatus } from '../../pages/common/enums';
-import { Payload } from '../../pages/common/models/payload';
-import { StepperMessage } from '../../pages/common/interfaces';
+import { stepperService } from './services/stepper-service';
+import { StepperStatus } from './common/enums';
+import { Payload } from './common/models/payload';
+import { StepperMessage } from './common/interfaces';
 import StepTwo from './StepTwo';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
+      maxWidth: '80%'
     },
     resetContainer: {
       padding: theme.spacing(3),
@@ -49,7 +49,7 @@ function getStepContent(step: number) {
   }
 }
 
-export default function VerticalLinearStepper() {
+const VerticalLinearStepper = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [payload, setPayload] = useState<Payload>(new Payload());
@@ -62,7 +62,6 @@ export default function VerticalLinearStepper() {
   
   const handleNext = () => {
     return stepperService.getMessage().subscribe((message: StepperMessage) => {
-      console.log(message);
       if (message.status === StepperStatus.VALID) {
         const { title, body } = message.payload;
         setPayload({ ...payload, title, body });
@@ -101,4 +100,5 @@ export default function VerticalLinearStepper() {
       )}
     </div>
   );
-}
+};
+export default VerticalLinearStepper;

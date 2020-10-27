@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { NotificationResponseDto } from '../../common/dtos/notification-response.dto';
 import { NotificationStatus, NotificationType } from '../../common/enums';
 import { NotificationsService } from '../services/notifications.service';
+import { TopicsResponseDto } from '../../common/dtos/topics-response.dto';
 
 @Controller('fcm-notifications')
 export class NotificationsController {
@@ -12,6 +13,11 @@ export class NotificationsController {
   @Get('/')
   async findAll(): Promise<NotificationResponseDto[]> {
     return await this.notificationsService.findAll();
+  }
+  
+  @Get('/topics')
+  async findAllTopics(): Promise<TopicsResponseDto> {
+    return await this.notificationsService.findAllTopics();
   }
   
   @Post('/save')

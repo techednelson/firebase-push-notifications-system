@@ -94,7 +94,7 @@ const Navigator = (props: NavigatorProps) => {
         </ListItem>
         {categories.map(({ id, children }) => (
           <React.Fragment key={id}>
-            <ListItem className={classes.categoryHeader}>
+            <ListItem key={id} className={classes.categoryHeader}>
               <ListItemText
                 classes={{
                   primary: classes.categoryHeaderPrimary,
@@ -104,7 +104,7 @@ const Navigator = (props: NavigatorProps) => {
               </ListItemText>
             </ListItem>
             {children.map(({ index, id: childId, url, icon, active }) => (
-              <Link href={url}>
+              <Link  key={childId} href={url}>
                 <ListItem
                   key={childId}
                   button

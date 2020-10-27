@@ -1,6 +1,6 @@
 import React from 'react';
 import Dashboard from '../components/layout/Dashboard';
-import VerticalLinearStepper from '../components/stepper/VerticalLinearStepper';
+import VerticalLinearStepper from '../components/VerticalLinearStepper';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { stepperService } from '../../pages/services/stepper-service';
-import { StepperStatus } from '../../pages/common/enums';
-import ActionsContainer from '../ActionsContainer';
+import { stepperService } from './services/stepper-service';
+import { StepperStatus } from './common/enums';
+import ActionsContainer from './ActionsContainer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       '& .MuiTextField-root': {
         margin: theme.spacing(2),
-        width: '300px',
+        width: '80%',
         display: 'flex',
         flexDirection: 'column'
       },
