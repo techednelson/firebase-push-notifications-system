@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { SubscriptionRequestDto } from '../../common/dtos/subscription-request.dto';
 import admin, { ServiceAccount } from 'firebase-admin';
-import { NotificationTokenPayloadDto } from '../../common/dtos/notification-token-payload.dto';
-import { NotificationPayloadDto } from '../../common/dtos/notification-payload.dto';
+import { NotificationRequestDto } from '../../common/dtos/notification-request.dto';
 import serviceAccount from '../../common/config/serviceAccountKey.json';
 import { NotificationsService } from './notifications.service';
 import { SubscribersService } from './subscribers.service';
 import { NotificationStatus } from '../../common/enums';
 import Message = admin.messaging.Message;
 import MulticastMessage = admin.messaging.MulticastMessage;
+import { MulticastRequestDto } from '../../common/dtos/multicast-request.dto';
 
 @Injectable()
 export class FcmService {
@@ -66,16 +66,16 @@ export class FcmService {
   }
   
   async sendPushNotificationToDevice(
-    notificationTokenPayloadDto: NotificationTokenPayloadDto,
+    notificationPayloadDto : NotificationRequestDto,
   ): Promise<string> {
-    if (notificationTokenPayloadDto.tokens.length > 1) {
-      throw new BadRequestException('Number of token must be equal to 1');
+    if (notificationPayloadDto.token === '') {
+      throw new BadRequestException('Token can not be empty');
     }
-    const { title, body, tokens, topic, username, type } = notificationTokenPayloadDto;
+    const { title, body, token, topic, username, type } = notificationPayloadDto;
     try {
       const message: Message = {
         data: { title, body },
-        token: tokens[0],
+        token,
       };
       await admin.messaging().send(message);
       await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.COMPLETED);
@@ -89,20 +89,39 @@ export class FcmService {
     }
   }
   
+  private async saveMulticastNotifications(
+    subscribers: NotificationRequestDto[],
+    success: boolean
+  ) {
+     await subscribers.forEach(subscriber => {
+        const { title, body, topic, username, type } = subscriber;
+        this.notificationsService.save(
+          title,
+          body,
+          topic,
+          username,
+          type,
+          success
+            ? NotificationStatus.COMPLETED
+            : NotificationStatus.FAILED
+        );
+      });
+  }
+  
   async sendMulticastPushNotification(
-    notificationTokenPayloadDto: NotificationTokenPayloadDto,
+    multicastNotificationRequestDto: MulticastRequestDto,
   ): Promise<string> {
-    const { title, body, tokens, topic, username, type } = notificationTokenPayloadDto;
+    const { subscribers, tokens } = multicastNotificationRequestDto;
     try {
       const message: MulticastMessage = {
-        data: { title, body },
+        data: { title: subscribers[0].title, body: subscribers[0].body },
         tokens,
       };
       await admin.messaging().sendMulticast(message);
-      await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.COMPLETED);
+      await this.saveMulticastNotifications(subscribers, true);
       return `Multicast push notification was sent`;
     } catch (error) {
-      await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.FAILED);
+      await this.saveMulticastNotifications(subscribers, false);
       console.log('Error sending multicast push notification', error);
       throw new InternalServerErrorException(
         `Error sending multicast push notification`,
@@ -111,7 +130,7 @@ export class FcmService {
   }
   
   async sendPushNotificationToTopic(
-    notificationPayloadDto: NotificationPayloadDto,
+    notificationPayloadDto: NotificationRequestDto,
   ): Promise<string> {
     const { title, body, type, topic, username } = notificationPayloadDto;
     try {

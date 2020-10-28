@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { SubscriptionRequestDto } from '../../common/dtos/subscription-request.dto';
 import { NotificationTokenPayloadDto } from '../../common/dtos/notification-token-payload.dto';
-import { NotificationPayloadDto } from '../../common/dtos/notification-payload.dto';
+import { NotificationRequestDto } from '../../common/dtos/notification-request.dto';
 import { FcmService } from '../services/fcm.service';
 
 @Controller('fcm')
@@ -48,7 +48,7 @@ export class FcmController {
   
   @Post('/topic')
   async sendPushNotificationToTopic(
-    @Body() notificationPayloadDto: NotificationPayloadDto,
+    @Body() notificationPayloadDto: NotificationRequestDto,
   ): Promise<string> {
     return await this.fcmService.sendPushNotificationToTopic(
       notificationPayloadDto,

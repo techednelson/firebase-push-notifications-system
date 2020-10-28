@@ -7,9 +7,12 @@ export interface HeadCell {
   label: string;
 }
 
-export interface StepperMessage {
-  status: StepperStatus;
-  step: number;
-  payload: { title: string, body: string }
+export interface Username {
+  username: string;
+  token: string;
 }
 
+export interface StepperEvent {
+  status: StepperStatus;
+  activeStep: number;
+}

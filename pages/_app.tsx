@@ -5,6 +5,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../components/theme/theme';
 import { SearchWordContextProvider } from '../components/context/SearchWordContext';
+import { PayloadContextProvider } from '../components/context/PayloadContext';
+import { StepperContextProvider } from '../components/context/StepperContext';
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -25,9 +27,13 @@ export default function MyApp(props: AppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <SearchWordContextProvider>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <Component {...pageProps} />
+          <PayloadContextProvider>
+            <StepperContextProvider>
+              {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+              <CssBaseline />
+              <Component {...pageProps} />
+            </StepperContextProvider>
+          </PayloadContextProvider>
         </SearchWordContextProvider>
       </ThemeProvider>
     </React.Fragment>

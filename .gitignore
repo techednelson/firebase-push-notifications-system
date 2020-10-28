@@ -36,3 +36,5 @@ lerna-debug.log*
 server/common/config/*
 /.next/*
 
+/components/services/firebase.js
+

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { stepperService } from './services/stepper-service';
 import { StepperStatus } from './common/enums';
-import ActionsContainer from './ActionsContainer';
+import { StepperEvent } from './common/interfaces';
+import { PayloadContext } from './context/PayloadContext';
+import { StepperContext } from './context/StepperContext';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,6 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const StepOne = () => {
   const classes = useStyles();
+  const { stepper, setStepper } = useContext(StepperContext);
+  const { payload, setPayload } = useContext(PayloadContext);
   const [title, setTitle] = useState<string>('');
   const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
   const [titleHelperText, setTitleHelperText] = useState<string>('');
@@ -28,52 +31,74 @@ const StepOne = () => {
   const [isBodyValid, setIsBodyValid] = useState<boolean>(true);
   const [bodyHelperText, setBodyHelperText] = useState<string>('');
   
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target;
-    input.value.length === 0 ? invalidInput(input.id) : validInput(input);
-  };
-  
-  const validInput = (input: HTMLInputElement) => {
-     if (input.id === 'title')  {
-      setTitle(input.value)
+  const validateTitle = (valid: boolean) => {
+    if (valid) {
       setIsTitleValid(true);
       setTitleHelperText('');
-      return;
-    }
-    setBody(input.value);
-    setIsBodyValid(true);
-    setBodyHelperText('');
-  };
-  
-  const invalidInput = (input: string) => {
-    if (input === 'title') {
+    } else {
       setTitleHelperText('Title value is required')
       setIsTitleValid(false);
-      return;
     }
-    setBodyHelperText('Message value is required');
-    setIsBodyValid(false);
   };
   
-  const handleSubmit = (e: React.FormEvent): void => {
-    e.preventDefault();
+  const validateBody = (valid: boolean) => {
+    if (valid) {
+      setIsBodyValid(true);
+      setBodyHelperText('');
+    } else {
+      setIsBodyValid(false);
+      setBodyHelperText('Message value is required');
+    }
+  };
+  
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    if (input.value.length === 0) {
+      if (input.id === 'title') {
+        setTitle(input.value)
+        validateTitle(false);
+      } else {
+        setBody(input.value);
+        validateBody(false);
+      }
+    } else {
+      if (input.id === 'title') {
+        setTitle(input.value)
+        validateTitle(true);
+      } else {
+        setBody(input.value);
+        validateBody(true);
+      }
+    }
+  };
+  
+  const handleSubmit = (): void => {
     if (title === '') {
-      invalidInput('title');
+      validateTitle(false);
     }
     if (body === '') {
-      invalidInput('message');
+      validateBody(false);
     }
     if (body !== '' && title !== '') {
-      stepperService.sendMessage({
+      setPayload({ ...payload, title, body });
+      setStepper((prevActiveStep: StepperEvent) => ({
         status: StepperStatus.VALID,
-        step: 0,
-        payload: { title, body }
-      });
+        activeStep: prevActiveStep.activeStep + 1
+    }));
     }
   };
   
+  useEffect(() => {
+    if (
+      stepper.status === StepperStatus.VALIDATING &&
+      stepper.activeStep === 0
+    ) {
+      handleSubmit();
+    }
+  }, [stepper]);
+  
   return (
-    <form onSubmit={handleSubmit} className={classes.root} noValidate autoComplete="off">
+    <form className={classes.root} noValidate autoComplete="off">
       <TextField
         error={!isTitleValid}
         id="title"
@@ -92,7 +117,6 @@ const StepOne = () => {
         variant="outlined"
         onChange={handleInput}
       />
-      <ActionsContainer isBackBtn={false} />
     </form>
  );
 };

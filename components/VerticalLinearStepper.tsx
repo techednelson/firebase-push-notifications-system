@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -8,11 +8,11 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import StepOne from './StepOne';
-import { stepperService } from './services/stepper-service';
 import { StepperStatus } from './common/enums';
-import { Payload } from './common/models/payload';
-import { StepperMessage } from './common/interfaces';
+import { StepperEvent } from './common/interfaces';
 import StepTwo from './StepTwo';
+import { PayloadContext } from './context/PayloadContext';
+import { StepperContext } from './context/StepperContext';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,6 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       marginTop: theme.spacing(1),
       marginRight: theme.spacing(1),
+    },
+    actionsContainer: {
+      marginBottom: theme.spacing(2),
     },
   }),
 );
@@ -51,46 +54,75 @@ function getStepContent(step: number) {
 
 const VerticalLinearStepper = () => {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [payload, setPayload] = useState<Payload>(new Payload());
+  const { stepper, setStepper } = useContext(StepperContext);
+  const { payload, setPayload } = useContext(PayloadContext);
   const steps = getSteps();
   
-  useEffect(() => {
-    const subscription$ = handleNext();
-    return () => subscription$.unsubscribe();
-  }, []);
-  
   const handleNext = () => {
-    return stepperService.getMessage().subscribe((message: StepperMessage) => {
-      if (message.status === StepperStatus.VALID) {
-        const { title, body } = message.payload;
-        setPayload({ ...payload, title, body });
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      }
-    })
+    const { activeStep } = stepper;
+    setStepper({ status: StepperStatus.VALIDATING, activeStep });
   };
-  
+
+  useEffect(() => {
+    if (stepper.status === StepperStatus.VALID) {
+      console.log(stepper);
+      console.log(payload);
+      setStepper((prevActiveStep: StepperEvent) => ({
+        status: StepperStatus.INVALID,
+        activeStep: prevActiveStep.activeStep
+      }));
+    }
+  }, [payload, stepper]);
+
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setStepper((prevActiveStep: StepperEvent) => ({
+      status: StepperStatus.INVALID,
+      activeStep: prevActiveStep.activeStep - 1
+    }));
   };
   
   const handleReset = () => {
-    setActiveStep(0);
+    setStepper({
+      status: StepperStatus.INITIAL,
+      activeStep: 0,
+    });
   };
   
   return (
     <div className={classes.root}>
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper activeStep={stepper.activeStep} orientation="vertical">
         {steps.map((label, index) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
             <StepContent>
               <Typography>{getStepContent(index)}</Typography>
+              <div className={classes.actionsContainer}>
+                <div>
+                  {index !== 0 ? (
+                    <Button
+                      onClick={handleBack}
+                      type="submit"
+                      className={classes.button}
+                    >
+                      Back
+                    </Button>
+                  ) : null}
+                  <Button
+                    onClick={handleNext}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    className={classes.button}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
             </StepContent>
           </Step>
         ))}
       </Stepper>
-      {activeStep === steps.length && (
+      {stepper.activeStep === steps.length && (
         <Paper square elevation={0} className={classes.resetContainer}>
           <Typography>All steps completed - you&apos;re finished</Typography>
           <Button onClick={handleReset} className={classes.button}>
