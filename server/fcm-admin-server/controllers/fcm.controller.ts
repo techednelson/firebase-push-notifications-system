@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { SubscriptionRequestDto } from '../../common/dtos/subscription-request.dto';
-import { NotificationTokenPayloadDto } from '../../common/dtos/notification-token-payload.dto';
 import { NotificationRequestDto } from '../../common/dtos/notification-request.dto';
 import { FcmService } from '../services/fcm.service';
+import { MulticastRequestDto } from '../../common/dtos/multicast-request.dto';
 
 @Controller('fcm')
 export class FcmController {
@@ -11,47 +11,27 @@ export class FcmController {
   }
   
   @Post('/subscribe')
-  async subscribeToTopic(
-    @Body() subscriptionRequestDto: SubscriptionRequestDto,
-  ): Promise<string> {
-    return await this.fcmService.subscribeToTopic(
-      subscriptionRequestDto,
-    );
+  async subscribeToTopic(@Body() subscriptionRequestDto: SubscriptionRequestDto): Promise<string> {
+    return await this.fcmService.subscribeToTopic(subscriptionRequestDto);
   }
   
   @Post('/unsubscribe')
-  async unsubscribeFromTopic(
-    @Body() subscriptionRequestDto: SubscriptionRequestDto,
-  ): Promise<string> {
-    return await this.fcmService.unsubscribeFromTopic(
-      subscriptionRequestDto,
-    );
+  async unsubscribeFromTopic(@Body() subscriptionRequestDto: SubscriptionRequestDto): Promise<string> {
+    return await this.fcmService.unsubscribeFromTopic(subscriptionRequestDto);
   }
   
   @Post('/token')
-  async sendPushNotificationToDevice(
-    @Body() notificationTokenPayloadDto: NotificationTokenPayloadDto,
-  ): Promise<string> {
-    return await this.fcmService.sendPushNotificationToDevice(
-      notificationTokenPayloadDto,
-    );
+  async sendPushNotificationToDevice(@Body() notificationRequestDto: NotificationRequestDto): Promise<string> {
+    return await this.fcmService.sendPushNotificationToDevice(notificationRequestDto);
   }
   
   @Post('/multicast')
-  async sendMulticastPushNotification(
-    @Body() notificationTokenPayloadDto: NotificationTokenPayloadDto,
-  ): Promise<string> {
-    return await this.fcmService.sendMulticastPushNotification(
-      notificationTokenPayloadDto,
-    );
+  async sendMulticastPushNotification(@Body() multicastRequestDto: MulticastRequestDto): Promise<string> {
+    return await this.fcmService.sendMulticastPushNotification(multicastRequestDto);
   }
   
   @Post('/topic')
-  async sendPushNotificationToTopic(
-    @Body() notificationPayloadDto: NotificationRequestDto,
-  ): Promise<string> {
-    return await this.fcmService.sendPushNotificationToTopic(
-      notificationPayloadDto,
-    );
+  async sendPushNotificationToTopic(@Body() notificationPayloadDto: NotificationRequestDto): Promise<string> {
+    return await this.fcmService.sendPushNotificationToTopic(notificationPayloadDto);
   }
 }

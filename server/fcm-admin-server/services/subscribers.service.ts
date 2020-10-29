@@ -1,4 +1,6 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException, ConflictException, Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subscriber } from '../../common/entities/subscriber.entity';
 import { Repository } from 'typeorm';
@@ -7,10 +9,7 @@ import { SubscriptionResponseDto } from '../../common/dtos/subscription-response
 @Injectable()
 export class SubscribersService {
   
-  constructor(
-    @InjectRepository(Subscriber)
-    private subscriberRepository: Repository<Subscriber>,
-  ) {
+  constructor(@InjectRepository(Subscriber) private subscriberRepository: Repository<Subscriber>) {
   }
   
   async findAll(): Promise<SubscriptionResponseDto[]> {
@@ -18,12 +17,7 @@ export class SubscribersService {
     return subscriptions.map(subscription => subscription as SubscriptionResponseDto);
   }
   
-  async save(
-    username: string,
-    token: string,
-    topic: string,
-    subscribed: boolean,
-  ): Promise<boolean> {
+  async save(username: string, token: string, topic: string, subscribed: boolean): Promise<boolean> {
     const notification = new Subscriber();
     notification.username = topic;
     notification.token = token;

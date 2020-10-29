@@ -6,28 +6,25 @@ import { StepperEvent } from './common/interfaces';
 import { PayloadContext } from './context/PayloadContext';
 import { StepperContext } from './context/StepperContext';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      '& .MuiTextField-root': {
-        margin: theme.spacing(2),
-        width: '80%',
-        display: 'flex',
-        flexDirection: 'column'
-      },
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  root: {
+    width: '100%', '& .MuiTextField-root': {
+      margin: theme.spacing(2),
+      width: '80%',
+      display: 'flex',
+      flexDirection: 'column',
     },
-  }),
-);
+  },
+}));
 
 const StepOne = () => {
   const classes = useStyles();
   const { stepper, setStepper } = useContext(StepperContext);
   const { payload, setPayload } = useContext(PayloadContext);
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>(payload.title);
   const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
   const [titleHelperText, setTitleHelperText] = useState<string>('');
-  const [body, setBody] = useState<string>('');
+  const [body, setBody] = useState<string>(payload.body);
   const [isBodyValid, setIsBodyValid] = useState<boolean>(true);
   const [bodyHelperText, setBodyHelperText] = useState<string>('');
   
@@ -36,7 +33,7 @@ const StepOne = () => {
       setIsTitleValid(true);
       setTitleHelperText('');
     } else {
-      setTitleHelperText('Title value is required')
+      setTitleHelperText('Title value is required');
       setIsTitleValid(false);
     }
   };
@@ -55,7 +52,7 @@ const StepOne = () => {
     const input = e.target;
     if (input.value.length === 0) {
       if (input.id === 'title') {
-        setTitle(input.value)
+        setTitle(input.value);
         validateTitle(false);
       } else {
         setBody(input.value);
@@ -63,7 +60,7 @@ const StepOne = () => {
       }
     } else {
       if (input.id === 'title') {
-        setTitle(input.value)
+        setTitle(input.value);
         validateTitle(true);
       } else {
         setBody(input.value);
@@ -82,23 +79,18 @@ const StepOne = () => {
     if (body !== '' && title !== '') {
       setPayload({ ...payload, title, body });
       setStepper((prevActiveStep: StepperEvent) => ({
-        status: StepperStatus.VALID,
-        activeStep: prevActiveStep.activeStep + 1
-    }));
+        status: StepperStatus.VALID, activeStep: prevActiveStep.activeStep + 1,
+      }));
     }
   };
   
   useEffect(() => {
-    if (
-      stepper.status === StepperStatus.VALIDATING &&
-      stepper.activeStep === 0
-    ) {
+    if (stepper.status === StepperStatus.VALIDATING && stepper.activeStep === 0) {
       handleSubmit();
     }
   }, [stepper]);
   
-  return (
-    <form className={classes.root} noValidate autoComplete="off">
+  return (<form className={classes.root} noValidate autoComplete="off">
       <TextField
         error={!isTitleValid}
         id="title"
@@ -106,6 +98,7 @@ const StepOne = () => {
         helperText={titleHelperText}
         variant="outlined"
         onChange={handleInput}
+        value={title}
       />
       <TextField
         id="message"
@@ -116,8 +109,8 @@ const StepOne = () => {
         rows={4}
         variant="outlined"
         onChange={handleInput}
+        value={body}
       />
-    </form>
- );
+    </form>);
 };
 export default StepOne;

@@ -5,18 +5,13 @@ export class Subscriber {
   // @ObjectIdColumn()
   // _id: number;
   
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn() id: number;
   
-  @Column()
-  username: string;
+  @Column() username: string;
   
-  @Column()
-  token: string;
+  @Column() token: string;
   
-  @Column()
-  topic: string;
+  @Column() topic: string;
   
-  @Column()
-  subscribed: boolean;
+  @Column() subscribed: boolean;
 }

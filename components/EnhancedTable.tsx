@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import { createStyles, lighten, makeStyles, Theme } from '@material-ui/core/styles';
+import {
+  createStyles, lighten, makeStyles, Theme,
+} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -35,13 +37,8 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
+function getComparator<Key extends keyof any>(order: Order, orderBy: Key): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
+  return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
 function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
@@ -71,8 +68,7 @@ const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
     onRequestSort(event, property);
   };
   
-  return (
-    <TableHead>
+  return (<TableHead>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
@@ -82,8 +78,7 @@ const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
             inputProps={{ 'aria-label': 'select all notifications' }}
           />
         </TableCell>
-        {props.headCells.map((headCell) => (
-          <TableCell
+        {props.headCells.map((headCell) => (<TableCell
             key={headCell.id}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -96,37 +91,26 @@ const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
               {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
+                </span>) : null}
             </TableSortLabel>
-          </TableCell>
-        ))}
+          </TableCell>))}
       </TableRow>
-    </TableHead>
-  );
+    </TableHead>);
 };
 
-const useToolbarStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
-    },
-    highlight:
-      theme.palette.type === 'light'
-        ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-        : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-    title: {
-      flex: '1 1 100%',
-    },
-  }),
-);
+const useToolbarStyles = makeStyles((theme: Theme) => createStyles({
+  root: {
+    paddingLeft: theme.spacing(2), paddingRight: theme.spacing(1),
+  }, highlight: theme.palette.type === 'light' ? {
+    color: theme.palette.secondary.main,
+    backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+  } : {
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.secondary.dark,
+  }, title: {
+    flex: '1 1 100%',
+  },
+}));
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
@@ -136,13 +120,11 @@ interface EnhancedTableToolbarProps {
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
   const { numSelected, selected } = props;
-  const router = useRouter()
+  const router = useRouter();
   
   const deleteSelected = () => {
     try {
-      const domain = router.pathname === '/list-notifications'
-        ? 'notifications'
-        : 'subscribers';
+      const domain = router.pathname === '/list-notifications' ? 'notifications' : 'subscribers';
       selected.forEach(async id => await axios.delete(`http://localhost:3000/fcm-${domain}/${id}`));
       router.reload();
     } catch (error) {
@@ -150,61 +132,48 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     }
   };
   
-  return (
-    <Toolbar
+  return (<Toolbar
       className={clsx(classes.root, {
         [classes.highlight]: numSelected > 0,
       })}
     >
-      {numSelected > 0 ? (
-        <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+      {numSelected > 0 ? (<Typography className={classes.title} color="inherit"
+                                      variant="subtitle1" component="div">
           {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography className={classes.title} variant="h6" id="tableTitle" component="div" />
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
+        </Typography>) : (
+        <Typography className={classes.title} variant="h6" id="tableTitle"
+                    component="div" />)}
+      {numSelected > 0 ? (<Tooltip title="Delete">
           <IconButton aria-label="delete" onClick={deleteSelected}>
             <DeleteIcon />
           </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
+        </Tooltip>) : (<Tooltip title="Filter list">
           <IconButton aria-label="filter list">
             <FilterListIcon />
           </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
+        </Tooltip>)}
+    </Toolbar>);
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-    },
-    paper: {
-      width: '100%',
-      marginBottom: theme.spacing(2),
-    },
-    table: {
-      minWidth: 750,
-    },
-    visuallyHidden: {
-      border: 0,
-      clip: 'rect(0 0 0 0)',
-      height: 1,
-      margin: -1,
-      overflow: 'hidden',
-      padding: 0,
-      position: 'absolute',
-      top: 20,
-      width: 1,
-    },
-  }),
-);
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  root: {
+    width: '100%',
+  }, paper: {
+    width: '100%', marginBottom: theme.spacing(2),
+  }, table: {
+    minWidth: 750,
+  }, visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
+  },
+}));
 
 interface EnhancedTableProps {
   rows: any;
@@ -245,10 +214,7 @@ const EnhancedTable = (props: EnhancedTableProps) => {
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     
     setSelected(newSelected);
@@ -270,16 +236,16 @@ const EnhancedTable = (props: EnhancedTableProps) => {
   const createRow = (row: any) => {
     return Object.keys(row).map((key, index) => {
       if (key === 'subscribed') {
-        return <TableCell key={index}>{row[key] ? 'Yes' : 'No'}</TableCell>
+        return <TableCell key={index}>{row[key] ? 'Yes' : 'No'}</TableCell>;
       }
-      return <TableCell key={index}>{row[key]}</TableCell>
+      return <TableCell key={index}>{row[key]}</TableCell>;
     });
   };
   
-  return (
-    <div className={classes.root}>
+  return (<div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} selected={selected} />
+        <EnhancedTableToolbar numSelected={selected.length}
+                              selected={selected} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -303,8 +269,7 @@ const EnhancedTable = (props: EnhancedTableProps) => {
                   const isItemSelected = isSelected(Number(row.id));
                   const labelId = `enhanced-table-checkbox-${index}`;
                   
-                  return (
-                    <TableRow
+                  return (<TableRow
                       hover
                       onClick={(event) => handleClick(event, Number(row.id))}
                       role="checkbox"
@@ -320,14 +285,11 @@ const EnhancedTable = (props: EnhancedTableProps) => {
                         />
                       </TableCell>
                       {createRow(row)}
-                    </TableRow>
-                  );
+                    </TableRow>);
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
+              {emptyRows > 0 && (<TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
-                </TableRow>
-              )}
+                </TableRow>)}
             </TableBody>
           </Table>
         </TableContainer>
@@ -341,8 +303,7 @@ const EnhancedTable = (props: EnhancedTableProps) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-    </div>
-  );
+    </div>);
 };
 
 export default EnhancedTable;

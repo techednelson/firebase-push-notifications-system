@@ -14,26 +14,17 @@ export class FcmAdminClientController {
   }
   
   @Get('/list-notifications')
-  async showListNotificationsPage(
-    @Req() req: IncomingMessage,
-    @Res() res: ServerResponse,
-  ): Promise<void> {
+  async showListNotificationsPage(@Req() req: IncomingMessage, @Res() res: ServerResponse): Promise<void> {
     await this.next.render('/list-notifications', req, res);
   }
   
   @Get('/compose-notification')
-  async showNotificationsPage(
-    @Req() req: IncomingMessage,
-    @Res() res: ServerResponse,
-  ): Promise<void> {
+  async showNotificationsPage(@Req() req: IncomingMessage, @Res() res: ServerResponse): Promise<void> {
     await this.next.render('/compose-notification', req, res);
   }
   
   @Get('/list-subscribers')
-  async showListSubscribersPage(
-    @Req() req: IncomingMessage,
-    @Res() res: ServerResponse,
-  ): Promise<void> {
+  async showListSubscribersPage(@Req() req: IncomingMessage, @Res() res: ServerResponse): Promise<void> {
     await this.next.render('/list-subscribers', req, res);
   }
 }

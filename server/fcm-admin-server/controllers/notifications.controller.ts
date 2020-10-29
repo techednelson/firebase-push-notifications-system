@@ -22,12 +22,7 @@ export class NotificationsController {
   
   @Post('/save')
   async save(@Body() notificationPayloadDto: {
-    title: string,
-    body: string,
-    topic: string,
-    username: string,
-    type: NotificationType,
-    status: NotificationStatus
+    title: string, body: string, topic: string, username: string, type: NotificationType, status: NotificationStatus
   }): Promise<boolean> {
     const { title, body, topic, username, type, status } = notificationPayloadDto;
     return await this.notificationsService.save(title, body, topic, username, type, status);

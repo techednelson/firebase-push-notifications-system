@@ -1,6 +1,6 @@
 import { Notification } from './models/notification';
 import { Subscriber } from './models/subscriber';
-import { StepperStatus } from './enums';
+import { NotificationType, StepperStatus } from './enums';
 
 export interface HeadCell {
   id: keyof Notification | keyof Subscriber;
@@ -15,4 +15,5 @@ export interface Username {
 export interface StepperEvent {
   status: StepperStatus;
   activeStep: number;
+  type?: NotificationType;
 }

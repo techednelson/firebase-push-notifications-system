@@ -13,24 +13,19 @@ import { StepperEvent } from './common/interfaces';
 import StepTwo from './StepTwo';
 import { PayloadContext } from './context/PayloadContext';
 import { StepperContext } from './context/StepperContext';
+import StepThree from './StepThree';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      maxWidth: '80%'
-    },
-    resetContainer: {
-      padding: theme.spacing(3),
-    },
-    button: {
-      marginTop: theme.spacing(1),
-      marginRight: theme.spacing(1),
-    },
-    actionsContainer: {
-      marginBottom: theme.spacing(2),
-    },
-  }),
-);
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  root: {
+    maxWidth: '80%',
+  }, resetContainer: {
+    padding: theme.spacing(3),
+  }, button: {
+    marginTop: theme.spacing(1), marginRight: theme.spacing(1),
+  }, actionsContainer: {
+    marginBottom: theme.spacing(2),
+  },
+}));
 
 function getSteps() {
   return ['Notification', 'Target', 'Send now'];
@@ -43,10 +38,7 @@ function getStepContent(step: number) {
     case 1:
       return <StepTwo />;
     case 2:
-      return `Try out different ad text to see what brings in the most customers,
-              and learn how to enhance your ads using features like ad extensions.
-              If you run into any problems with your ads, find out how to tell if
-              they're running and how to resolve approval issues.`;
+      return <StepThree />;
     default:
       return 'Unknown step';
   }
@@ -62,51 +54,50 @@ const VerticalLinearStepper = () => {
     const { activeStep } = stepper;
     setStepper({ status: StepperStatus.VALIDATING, activeStep });
   };
-
+  
   useEffect(() => {
     if (stepper.status === StepperStatus.VALID) {
       console.log(stepper);
       console.log(payload);
-      setStepper((prevActiveStep: StepperEvent) => ({
-        status: StepperStatus.INVALID,
-        activeStep: prevActiveStep.activeStep
-      }));
+      setStepper((prevActiveStep: StepperEvent) => {
+        const stepperStatus = {
+          status: StepperStatus.INVALID,
+          activeStep: prevActiveStep.activeStep
+        };
+        return prevActiveStep.type !== undefined
+          ? { ...stepperStatus, type: prevActiveStep.type }
+          : stepperStatus;
+      });
     }
   }, [payload, stepper]);
-
+  
   const handleBack = () => {
     setStepper((prevActiveStep: StepperEvent) => ({
-      status: StepperStatus.INVALID,
-      activeStep: prevActiveStep.activeStep - 1
+      status: StepperStatus.INVALID, activeStep: prevActiveStep.activeStep - 1,
     }));
   };
   
   const handleReset = () => {
     setStepper({
-      status: StepperStatus.INITIAL,
-      activeStep: 0,
+      status: StepperStatus.INITIAL, activeStep: 0,
     });
   };
   
-  return (
-    <div className={classes.root}>
+  return (<div className={classes.root}>
       <Stepper activeStep={stepper.activeStep} orientation="vertical">
-        {steps.map((label, index) => (
-          <Step key={label}>
+        {steps.map((label, index) => (<Step key={label}>
             <StepLabel>{label}</StepLabel>
             <StepContent>
               <Typography>{getStepContent(index)}</Typography>
               <div className={classes.actionsContainer}>
                 <div>
-                  {index !== 0 ? (
-                    <Button
+                  {index !== 0 ? (<Button
                       onClick={handleBack}
                       type="submit"
                       className={classes.button}
                     >
-                      Back
-                    </Button>
-                  ) : null}
+                       Back
+                    </Button>) : null}
                   <Button
                     onClick={handleNext}
                     variant="contained"
@@ -114,13 +105,12 @@ const VerticalLinearStepper = () => {
                     type="submit"
                     className={classes.button}
                   >
-                    Next
+                    {stepper.activeStep === 2 ? 'Publish' : 'Next'}
                   </Button>
                 </div>
               </div>
             </StepContent>
-          </Step>
-        ))}
+          </Step>))}
       </Stepper>
       {stepper.activeStep === steps.length && (
         <Paper square elevation={0} className={classes.resetContainer}>
@@ -128,9 +118,7 @@ const VerticalLinearStepper = () => {
           <Button onClick={handleReset} className={classes.button}>
             Reset
           </Button>
-        </Paper>
-      )}
-    </div>
-  );
+        </Paper>)}
+    </div>);
 };
 export default VerticalLinearStepper;

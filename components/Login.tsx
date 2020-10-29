@@ -18,16 +18,12 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
+  }, avatar: {
+    margin: theme.spacing(1), backgroundColor: theme.palette.secondary.main,
+  }, form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
-  },
-  submit: {
+  }, submit: {
     margin: theme.spacing(3, 0, 2),
   },
 }));
@@ -42,8 +38,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/auth/login', {
-        username,
-        password,
+        username, password,
       });
       if (response.data && response.data.accessToken) {
         localStorage.setItem('fcm_token', response.data.accessToken);
@@ -54,8 +49,7 @@ const Login = () => {
     }
   };
   
-  return (
-    <Container component="main" maxWidth="xs">
+  return (<Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -103,8 +97,7 @@ const Login = () => {
       <Box mt={8}>
         <Copyright />
       </Box>
-    </Container>
-  );
+    </Container>);
 };
 
 export default Login;

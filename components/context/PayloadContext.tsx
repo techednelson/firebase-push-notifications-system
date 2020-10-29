@@ -8,14 +8,12 @@ interface PayloadContextProps {
 
 export const PayloadContext = createContext<PayloadContextProps>({
   payload: new Payload(),
-  setPayload: () => {}
+  setPayload: () => {},
 });
 
 export const PayloadContextProvider = (props: any) => {
   const [payload, setPayload] = useState<Payload>(new Payload());
-  return (
-    <PayloadContext.Provider value={{ payload, setPayload }}>
+  return (<PayloadContext.Provider value={{ payload, setPayload }}>
       {props.children}
-    </PayloadContext.Provider>
-  );
+    </PayloadContext.Provider>);
 };

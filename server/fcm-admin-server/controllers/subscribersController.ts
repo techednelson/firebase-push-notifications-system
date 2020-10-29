@@ -15,10 +15,7 @@ export class SubscribersController {
   
   @Post('/save')
   async save(@Body() subscriptionRequestDto: {
-    username: string;
-    tokens: string[];
-    topicName: string;
-    subscribed: boolean;
+    username: string; tokens: string[]; topicName: string; subscribed: boolean;
   }): Promise<boolean> {
     const { username, tokens, topicName, subscribed } = subscriptionRequestDto;
     return await this.subscribersService.save(username, tokens[0], topicName, subscribed);

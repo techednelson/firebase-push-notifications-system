@@ -7,6 +7,7 @@ import theme from '../components/theme/theme';
 import { SearchWordContextProvider } from '../components/context/SearchWordContext';
 import { PayloadContextProvider } from '../components/context/PayloadContext';
 import { StepperContextProvider } from '../components/context/StepperContext';
+import { MulticastContextProvider } from '../components/context/MulticastContext';
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -19,8 +20,7 @@ export default function MyApp(props: AppProps) {
     }
   }, []);
   
-  return (
-    <React.Fragment>
+  return (<React.Fragment>
       <Head>
         <title>FCM Admin</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
@@ -29,13 +29,14 @@ export default function MyApp(props: AppProps) {
         <SearchWordContextProvider>
           <PayloadContextProvider>
             <StepperContextProvider>
-              {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-              <CssBaseline />
-              <Component {...pageProps} />
+              <MulticastContextProvider>
+                {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                <CssBaseline />
+                <Component {...pageProps} />
+              </MulticastContextProvider>
             </StepperContextProvider>
           </PayloadContextProvider>
         </SearchWordContextProvider>
       </ThemeProvider>
-    </React.Fragment>
-  );
+    </React.Fragment>);
 }

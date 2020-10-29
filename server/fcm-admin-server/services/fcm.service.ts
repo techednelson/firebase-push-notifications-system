@@ -1,4 +1,6 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException, Injectable, InternalServerErrorException,
+} from '@nestjs/common';
 import { SubscriptionRequestDto } from '../../common/dtos/subscription-request.dto';
 import admin, { ServiceAccount } from 'firebase-admin';
 import { NotificationRequestDto } from '../../common/dtos/notification-request.dto';
@@ -6,17 +8,14 @@ import serviceAccount from '../../common/config/serviceAccountKey.json';
 import { NotificationsService } from './notifications.service';
 import { SubscribersService } from './subscribers.service';
 import { NotificationStatus } from '../../common/enums';
+import { MulticastRequestDto } from '../../common/dtos/multicast-request.dto';
 import Message = admin.messaging.Message;
 import MulticastMessage = admin.messaging.MulticastMessage;
-import { MulticastRequestDto } from '../../common/dtos/multicast-request.dto';
 
 @Injectable()
 export class FcmService {
   
-  constructor(
-    private readonly notificationsService: NotificationsService,
-    private readonly subscribersService: SubscribersService,
-  ) {
+  constructor(private readonly notificationsService: NotificationsService, private readonly subscribersService: SubscribersService) {
     FcmService.initFirebase();
   }
   
@@ -27,9 +26,7 @@ export class FcmService {
     });
   }
   
-  async subscribeToTopic(
-    subscriptionRequestDto: SubscriptionRequestDto,
-  ): Promise<string> {
+  async subscribeToTopic(subscriptionRequestDto: SubscriptionRequestDto): Promise<string> {
     const { username, tokens, topicName } = subscriptionRequestDto;
     try {
       const response = await admin
@@ -40,15 +37,11 @@ export class FcmService {
       return `Successfully subscribed to topic: ${topicName}`;
     } catch (error) {
       console.log(`Error subscribing to topic: ${topicName}`, error);
-      throw new InternalServerErrorException(
-        `Error subscribing to topic: ${topicName}`,
-      );
+      throw new InternalServerErrorException(`Error subscribing to topic: ${topicName}`);
     }
   }
   
-  async unsubscribeFromTopic(
-    subscriptionRequestDto: SubscriptionRequestDto,
-  ): Promise<string> {
+  async unsubscribeFromTopic(subscriptionRequestDto: SubscriptionRequestDto): Promise<string> {
     const { username, tokens, topicName } = subscriptionRequestDto;
     try {
       const response = await admin
@@ -59,23 +52,18 @@ export class FcmService {
       return `Successfully unsubscribed to topic: ${topicName}`;
     } catch (error) {
       console.log(`Error unsubscribing to topic: ${topicName}`, error);
-      throw new InternalServerErrorException(
-        `Error unsubscribing to topic: ${topicName}`,
-      );
+      throw new InternalServerErrorException(`Error unsubscribing to topic: ${topicName}`);
     }
   }
   
-  async sendPushNotificationToDevice(
-    notificationPayloadDto : NotificationRequestDto,
-  ): Promise<string> {
+  async sendPushNotificationToDevice(notificationPayloadDto: NotificationRequestDto): Promise<string> {
     if (notificationPayloadDto.token === '') {
       throw new BadRequestException('Token can not be empty');
     }
     const { title, body, token, topic, username, type } = notificationPayloadDto;
     try {
       const message: Message = {
-        data: { title, body },
-        token,
+        data: { title, body }, token,
       };
       await admin.messaging().send(message);
       await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.COMPLETED);
@@ -83,34 +71,11 @@ export class FcmService {
     } catch (error) {
       await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.FAILED);
       console.log(`Error sending push notification to username: ${username}`, error);
-      throw new InternalServerErrorException(
-        `Error sending push notification to username: ${username}`,
-      );
+      throw new InternalServerErrorException(`Error sending push notification to username: ${username}`);
     }
   }
   
-  private async saveMulticastNotifications(
-    subscribers: NotificationRequestDto[],
-    success: boolean
-  ) {
-     await subscribers.forEach(subscriber => {
-        const { title, body, topic, username, type } = subscriber;
-        this.notificationsService.save(
-          title,
-          body,
-          topic,
-          username,
-          type,
-          success
-            ? NotificationStatus.COMPLETED
-            : NotificationStatus.FAILED
-        );
-      });
-  }
-  
-  async sendMulticastPushNotification(
-    multicastNotificationRequestDto: MulticastRequestDto,
-  ): Promise<string> {
+  async sendMulticastPushNotification(multicastNotificationRequestDto: MulticastRequestDto): Promise<string> {
     const { subscribers, tokens } = multicastNotificationRequestDto;
     try {
       const message: MulticastMessage = {
@@ -123,20 +88,15 @@ export class FcmService {
     } catch (error) {
       await this.saveMulticastNotifications(subscribers, false);
       console.log('Error sending multicast push notification', error);
-      throw new InternalServerErrorException(
-        `Error sending multicast push notification`,
-      );
+      throw new InternalServerErrorException(`Error sending multicast push notification`);
     }
   }
   
-  async sendPushNotificationToTopic(
-    notificationPayloadDto: NotificationRequestDto,
-  ): Promise<string> {
+  async sendPushNotificationToTopic(notificationPayloadDto: NotificationRequestDto): Promise<string> {
     const { title, body, type, topic, username } = notificationPayloadDto;
     try {
       const message: Message = {
-        data: { title, body },
-        topic,
+        data: { title, body }, topic,
       };
       await admin.messaging().send(message);
       await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.COMPLETED);
@@ -144,9 +104,14 @@ export class FcmService {
     } catch (error) {
       await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.FAILED);
       console.log(`Error sending push notification to topic: ${topic}`, error);
-      throw new InternalServerErrorException(
-        `Error sending push notification to topic: ${topic}`,
-      );
+      throw new InternalServerErrorException(`Error sending push notification to topic: ${topic}`);
     }
+  }
+  
+  private async saveMulticastNotifications(subscribers: NotificationRequestDto[], success: boolean) {
+    await subscribers.forEach(subscriber => {
+      const { title, body, topic, username, type } = subscriber;
+      this.notificationsService.save(title, body, topic, username, type, success ? NotificationStatus.COMPLETED : NotificationStatus.FAILED);
+    });
   }
 }

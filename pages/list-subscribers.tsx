@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';;
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import Dashboard from '../components/layout/Dashboard';
 import Content from '../components/layout/Content';
@@ -8,13 +8,15 @@ import { HeadCell } from '../components/common/interfaces';
 import { Typography } from '@material-ui/core';
 import { SearchWordContext } from '../components/context/SearchWordContext';
 
-const headCells: HeadCell[] = [
-  { id: 'id', label: 'ID' },
-  { id: 'username', label: 'Username' },
-  { id: 'token', label: 'Token' },
-  { id: 'topic', label: 'Topic' },
-  { id: 'subscribed', label: 'Subscribed' },
-];
+;
+
+const headCells: HeadCell[] = [{ id: 'id', label: 'ID' }, {
+  id: 'username',
+  label: 'Username',
+}, { id: 'token', label: 'Token' }, {
+  id: 'topic',
+  label: 'Topic',
+}, { id: 'subscribed', label: 'Subscribed' }];
 
 const ListSubscribers = () => {
   const { searchWord } = useContext(SearchWordContext);
@@ -26,7 +28,7 @@ const ListSubscribers = () => {
       .then(({ data }) => {
         if (data) {
           setSubscribers(data);
-          setSubscribersBackup(data)
+          setSubscribersBackup(data);
         }
       })
       .catch((error) => console.log(error));
@@ -36,10 +38,7 @@ const ListSubscribers = () => {
     let filtered: Subscriber[] = [];
     if (searchWord.length >= 3) {
       filtered = subscribers.filter(subscriber => {
-        if (
-          subscriber.username.includes(searchWord) ||
-          subscriber.topic.includes(searchWord)
-        ) {
+        if (subscriber.username.includes(searchWord) || subscriber.topic.includes(searchWord)) {
           return subscriber;
         }
       });
@@ -49,19 +48,15 @@ const ListSubscribers = () => {
     setSubscribers(filtered);
   }, [searchWord]);
   
-  return (
-    <Dashboard>
+  return (<Dashboard>
       <Content>
-         {subscribers.length === 0 ? (
+        {subscribers.length === 0 ? (
           <Typography color="textSecondary" align="center">
             No Subscribers for this project yet
-          </Typography>
-        ) : (
-          <EnhancedTable rows={subscribers} headCells={headCells} />
-        )}
+          </Typography>) : (
+          <EnhancedTable rows={subscribers} headCells={headCells} />)}
       </Content>
-    </Dashboard>
-  );
+    </Dashboard>);
 };
 
 export default ListSubscribers;

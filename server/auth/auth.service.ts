@@ -1,4 +1,6 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException, Injectable, UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../common/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -9,10 +11,7 @@ import { JwtPayload } from '../common/interfaces';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-    private jwtService: JwtService,
-  ) {
+  constructor(@InjectRepository(User) private userRepository: Repository<User>, private jwtService: JwtService) {
   }
   
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
@@ -31,9 +30,7 @@ export class AuthService {
     }
   }
   
-  async login(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
+  async login(authCredentialsDto: AuthCredentialsDto): Promise<{ accessToken: string }> {
     const { username, password } = authCredentialsDto;
     const user = await this.userRepository.findOne({ username });
     const isUserValid = user && (await bcrypt.compare(password, user.password));
@@ -47,9 +44,7 @@ export class AuthService {
     return { accessToken };
   }
   
-  async createRootUser(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<string> {
+  async createRootUser(authCredentialsDto: AuthCredentialsDto): Promise<string> {
     const user = await this.userRepository.findOne({
       username: authCredentialsDto.username,
     });
