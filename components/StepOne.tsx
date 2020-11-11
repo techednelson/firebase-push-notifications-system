@@ -3,8 +3,9 @@ import { TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { StepperStatus } from './common/enums';
 import { StepperEvent } from './common/interfaces';
-import { PayloadContext } from './context/PayloadContext';
+import { TopicContext } from './context/TopicContext';
 import { StepperContext } from './context/StepperContext';
+import { NotificationContext } from './context/NotificationContext';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -20,11 +21,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const StepOne = () => {
   const classes = useStyles();
   const { stepper, setStepper } = useContext(StepperContext);
-  const { payload, setPayload } = useContext(PayloadContext);
-  const [title, setTitle] = useState<string>(payload.title);
+  const { notification, setNotification } = useContext(NotificationContext);
+  const [title, setTitle] = useState<string>(notification.title);
   const [isTitleValid, setIsTitleValid] = useState<boolean>(true);
   const [titleHelperText, setTitleHelperText] = useState<string>('');
-  const [body, setBody] = useState<string>(payload.body);
+  const [body, setBody] = useState<string>(notification.body);
   const [isBodyValid, setIsBodyValid] = useState<boolean>(true);
   const [bodyHelperText, setBodyHelperText] = useState<string>('');
   
@@ -77,7 +78,7 @@ const StepOne = () => {
       validateBody(false);
     }
     if (body !== '' && title !== '') {
-      setPayload({ ...payload, title, body });
+      setNotification({ ...notification, title, body });
       setStepper((prevActiveStep: StepperEvent) => ({
         status: StepperStatus.VALID, activeStep: prevActiveStep.activeStep + 1,
       }));

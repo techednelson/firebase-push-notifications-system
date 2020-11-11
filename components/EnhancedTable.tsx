@@ -19,11 +19,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { Notification } from './common/models/notification';
+import { Notification } from './common/models/Notification';
 import { HeadCell } from './common/interfaces';
-import { Subscriber } from './common/models/subscriber';
-import axios from 'axios';
-import { useRouter } from 'next/router';
+import { Subscriber } from './common/models/Subscriber';
+import { NextRouter, useRouter } from 'next/router';
+import ToggleOffIcon from '@material-ui/icons/ToggleOff';
+import ToggleOnIcon from '@material-ui/icons/ToggleOn';
+import { axiosApiInstance } from '../pages/_app';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -55,7 +57,7 @@ interface EnhancedTableHeadProps {
   classes: ReturnType<typeof useStyles>;
   numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Notification | keyof Subscriber) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  // onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
@@ -63,7 +65,7 @@ interface EnhancedTableHeadProps {
 }
 
 const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { classes, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property: keyof Notification | keyof Subscriber) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
@@ -71,12 +73,12 @@ const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
   return (<TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all notifications' }}
-          />
+          {/*<Checkbox*/}
+          {/*  indeterminate={numSelected > 0 && numSelected < rowCount}*/}
+          {/*  checked={rowCount > 0 && numSelected === rowCount}*/}
+          {/*  onChange={onSelectAllClick}*/}
+          {/*  inputProps={{ 'aria-label': 'select all notifications' }}*/}
+          {/*/>*/}
         </TableCell>
         {props.headCells.map((headCell) => (<TableCell
             key={headCell.id}
@@ -115,18 +117,30 @@ const useToolbarStyles = makeStyles((theme: Theme) => createStyles({
 interface EnhancedTableToolbarProps {
   numSelected: number;
   selected: number[];
+  domain: string;
+  router: NextRouter;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
   const { numSelected, selected } = props;
-  const router = useRouter();
   
   const deleteSelected = () => {
     try {
-      const domain = router.pathname === '/list-notifications' ? 'notifications' : 'subscribers';
-      selected.forEach(async id => await axios.delete(`http://localhost:3000/fcm-${domain}/${id}`));
-      router.reload();
+      selected.forEach(async id => await axiosApiInstance.delete(`fcm-${props.domain}/${id}`));
+      props.router.reload();
+    } catch (error) {
+      console.log('There was issue deleting the selected elements', error);
+    }
+  };
+  
+  const toggleSubscription = () => {
+    if (selected.length > 10) {
+      return;
+    }
+    try {
+      selected.forEach(async id => await axiosApiInstance.post(`fcm-${props.domain}/${id}`));
+      props.router.reload();
     } catch (error) {
       console.log('There was issue deleting the selected elements', error);
     }
@@ -143,11 +157,20 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Typography>) : (
         <Typography className={classes.title} variant="h6" id="tableTitle"
                     component="div" />)}
-      {numSelected > 0 ? (<Tooltip title="Delete">
-          <IconButton aria-label="delete" onClick={deleteSelected}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>) : (<Tooltip title="Filter list">
+      {numSelected > 0 ? (
+        <React.Fragment>
+          {props.domain === 'subscribers' ? (
+            <IconButton aria-label="Toggle subscription" onClick={toggleSubscription}>
+              <ToggleOffIcon />
+            </IconButton>
+          ) : null}
+          <Tooltip title="Delete">
+            <IconButton aria-label="delete" onClick={deleteSelected}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </React.Fragment>
+      ) : (<Tooltip title="Filter list">
           <IconButton aria-label="filter list">
             <FilterListIcon />
           </IconButton>
@@ -185,8 +208,17 @@ const EnhancedTable = (props: EnhancedTableProps) => {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof Notification | keyof Subscriber>('id');
   const [selected, setSelected] = useState<number[]>([]);
+  const [users, setUsers] = useState<{ id: number, token: string }[]>([]);
+  const [subscriptions, setSubscriptions] = useState<{ topic: string, tokens: string[] }[]>([]);
+  const [tokens, setTokens] = useState<string[]>([]);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const router = useRouter();
+  const [domain] = useState(
+    router.pathname === '/list-notifications'
+      ? 'notifications'
+      : 'subscribers'
+  );
   
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Notification | keyof Subscriber) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -194,16 +226,7 @@ const EnhancedTable = (props: EnhancedTableProps) => {
     setOrderBy(property);
   };
   
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelecteds = props.rows.map((n: Notification | Subscriber) => n.id);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-  
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+  const handleSelected = (id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: number[] = [];
     
@@ -218,6 +241,34 @@ const EnhancedTable = (props: EnhancedTableProps) => {
     }
     
     setSelected(newSelected);
+  };
+  
+  const handleNotificationsClick = (event: React.MouseEvent<unknown>, id: number) => {
+    handleSelected(id);
+  };
+  
+  const handleSubscribersClick = (
+    event: React.MouseEvent<unknown>, id: number, token: any, topic: any
+  ) => {
+    handleSelected(id);
+    
+    const newUser = [...users];
+    newUser.push({ id, token });
+    setUsers(newUser);
+    
+    const newToken = [...tokens];
+    newToken.push(token);
+    setTokens(newToken);
+    
+    console.log(selected);
+    
+    // Object.keys(subscriptions).forEach(key => {
+    //   console.log(key);
+    // });
+    
+    // const newSubscription = [...subscriptions];
+    // newSubscription.push({ topic, token });
+    // setSubscriptions(newSubscription);
   };
   
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -244,8 +295,12 @@ const EnhancedTable = (props: EnhancedTableProps) => {
   
   return (<div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length}
-                              selected={selected} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          selected={selected}
+          router={router}
+          domain={domain}
+        />
         <TableContainer>
           <Table
             className={classes.table}
@@ -257,7 +312,6 @@ const EnhancedTable = (props: EnhancedTableProps) => {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={props.rows.length}
               headCells={props.headCells}
@@ -271,7 +325,11 @@ const EnhancedTable = (props: EnhancedTableProps) => {
                   
                   return (<TableRow
                       hover
-                      onClick={(event) => handleClick(event, Number(row.id))}
+                      onClick={(event) => {
+                        domain === 'notifications'
+                          ? handleNotificationsClick(event, Number(row.id))
+                          : handleSubscribersClick(event, Number(row.id), row.token, row.topic)
+                      }}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}

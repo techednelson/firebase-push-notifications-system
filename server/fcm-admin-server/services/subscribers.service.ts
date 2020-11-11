@@ -18,13 +18,13 @@ export class SubscribersService {
   }
   
   async save(username: string, token: string, topic: string, subscribed: boolean): Promise<boolean> {
-    const notification = new Subscriber();
-    notification.username = topic;
-    notification.token = token;
-    notification.topic = topic;
-    notification.subscribed = subscribed;
+    const subscriber = new Subscriber();
+    subscriber.username = `${topic}-${username}`;
+    subscriber.token = token;
+    subscriber.topic = topic;
+    subscriber.subscribed = subscribed;
     try {
-      await this.subscriberRepository.save(notification);
+      await this.subscriberRepository.save(subscriber);
       return true;
     } catch (error) {
       console.log(error);

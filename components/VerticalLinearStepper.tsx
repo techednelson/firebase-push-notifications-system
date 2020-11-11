@@ -11,7 +11,7 @@ import StepOne from './StepOne';
 import { StepperStatus } from './common/enums';
 import { StepperEvent } from './common/interfaces';
 import StepTwo from './StepTwo';
-import { PayloadContext } from './context/PayloadContext';
+import { TopicContext } from './context/TopicContext';
 import { StepperContext } from './context/StepperContext';
 import StepThree from './StepThree';
 
@@ -47,29 +47,26 @@ function getStepContent(step: number) {
 const VerticalLinearStepper = () => {
   const classes = useStyles();
   const { stepper, setStepper } = useContext(StepperContext);
-  const { payload, setPayload } = useContext(PayloadContext);
+  const { topicPayload, setTopicPayload } = useContext(TopicContext);
   const steps = getSteps();
   
   const handleNext = () => {
     const { activeStep } = stepper;
-    setStepper({ status: StepperStatus.VALIDATING, activeStep });
+    setStepper((prevActiveStep: StepperEvent) => ({
+      ...prevActiveStep,
+        status: StepperStatus.VALIDATING,
+        activeStep
+    }));
   };
   
   useEffect(() => {
-    if (stepper.status === StepperStatus.VALID) {
-      console.log(stepper);
-      console.log(payload);
-      setStepper((prevActiveStep: StepperEvent) => {
-        const stepperStatus = {
-          status: StepperStatus.INVALID,
-          activeStep: prevActiveStep.activeStep
-        };
-        return prevActiveStep.type !== undefined
-          ? { ...stepperStatus, type: prevActiveStep.type }
-          : stepperStatus;
-      });
+    if (stepper.status === StepperStatus.VALID && stepper.activeStep !== 2) {
+      setStepper((prevActiveStep: StepperEvent) => ({
+        status: StepperStatus.INVALID,
+        activeStep: prevActiveStep.activeStep
+      }));
     }
-  }, [payload, stepper]);
+  }, [topicPayload, stepper]);
   
   const handleBack = () => {
     setStepper((prevActiveStep: StepperEvent) => ({

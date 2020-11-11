@@ -1,10 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post, UseGuards,
+} from '@nestjs/common';
 import { NotificationResponseDto } from '../../common/dtos/notification-response.dto';
 import { NotificationStatus, NotificationType } from '../../common/enums';
 import { NotificationsService } from '../services/notifications.service';
 import { TopicsResponseDto } from '../../common/dtos/topics-response.dto';
+import JwtAccessTokenGuard from '../../auth/guards/jwt-access-token.guard';
 
 @Controller('fcm-notifications')
+@UseGuards(JwtAccessTokenGuard)
 export class NotificationsController {
   
   constructor(private readonly notificationsService: NotificationsService) {

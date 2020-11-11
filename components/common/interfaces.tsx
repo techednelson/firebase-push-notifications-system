@@ -1,5 +1,5 @@
-import { Notification } from './models/notification';
-import { Subscriber } from './models/subscriber';
+import { Notification } from './models/Notification';
+import { Subscriber } from './models/Subscriber';
 import { NotificationType, StepperStatus } from './enums';
 
 export interface HeadCell {

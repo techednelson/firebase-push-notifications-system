@@ -1,4 +1,4 @@
-import { Payload } from './payload';
+import { Payload } from './Payload';
 
 export class MulticastPayload {
   subscribers: Payload[];

@@ -1,22 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
 import Dashboard from '../components/layout/Dashboard';
 import Content from '../components/layout/Content';
 import EnhancedTable from '../components/EnhancedTable';
-import { Subscriber } from '../components/common/models/subscriber';
+import { Subscriber } from '../components/common/models/Subscriber';
 import { HeadCell } from '../components/common/interfaces';
 import { Typography } from '@material-ui/core';
 import { SearchWordContext } from '../components/context/SearchWordContext';
+import { LocalStorage } from '../components/common/enums';
+import { axiosApiInstance } from './_app';
 
-;
-
-const headCells: HeadCell[] = [{ id: 'id', label: 'ID' }, {
-  id: 'username',
-  label: 'Username',
-}, { id: 'token', label: 'Token' }, {
-  id: 'topic',
-  label: 'Topic',
-}, { id: 'subscribed', label: 'Subscribed' }];
+const headCells: HeadCell[] = [
+  { id: 'id', label: 'ID' },
+  { id: 'username', label: 'Username' },
+  { id: 'token', label: 'Token' },
+  { id: 'topic', label: 'Topic'},
+  { id: 'subscribed', label: 'Subscribed' }
+];
 
 const ListSubscribers = () => {
   const { searchWord } = useContext(SearchWordContext);
@@ -24,7 +23,7 @@ const ListSubscribers = () => {
   const [subscribersBackup, setSubscribersBackup] = useState<Subscriber[]>([]);
   
   useEffect(() => {
-    axios.get('http://localhost:3000/fcm-subscribers')
+    axiosApiInstance.get('fcm-subscribers')
       .then(({ data }) => {
         if (data) {
           setSubscribers(data);

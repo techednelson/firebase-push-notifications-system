@@ -1,16 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { StepperContext } from './context/StepperContext';
-import { PayloadContext } from './context/PayloadContext';
+import { TopicContext } from './context/TopicContext';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 import ScheduleIcon from '@material-ui/icons/Schedule';
-import { StepperStatus } from './common/enums';
+import { NotificationType, StepperStatus } from './common/enums';
+import { MulticastContext } from './context/MulticastContext';
+import { SingleContext } from './context/SingleContext';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
    root: {
@@ -38,16 +38,43 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const StepThree = () => {
   const classes = useStyles();
-  const { stepper, setStepper } = useContext(StepperContext);
-  const { payload, setPayload } = useContext(PayloadContext);
+  const { stepper } = useContext(StepperContext);
+  const { topicPayload } = useContext(TopicContext);
+  const { singlePayload } = useContext(SingleContext);
+  const { multicast } = useContext(MulticastContext);
   
-  const handleSubmit = () => {
-  
+  const handleSubmit = (type: NotificationType) => {
+    let url;
+    let body;
+    switch (type) {
+      case NotificationType.SINGLE:
+        url = 'http://localhost:3000/fcm/token';
+        body = singlePayload;
+        break;
+      case NotificationType.MULTICAST:
+        url = 'http://localhost:3000/fcm/multicast';
+        body = multicast;
+        break;
+      case NotificationType.TOPIC:
+        url = 'http://localhost:3000/fcm/topic';
+        body = topicPayload;
+        break;
+    }
+    console.log(url);
+    console.log(body);
+     // axios.post(url, body)
+     //      .then(response => console.log(response))
+     //      .catch(error => console.log(error));
   };
   
   useEffect(() => {
-    if (stepper.status === StepperStatus.VALIDATING && stepper.activeStep === 2) {
-      handleSubmit();
+    console.log(stepper);
+    if (
+      stepper.status === StepperStatus.VALIDATING &&
+      stepper.activeStep === 2 &&
+      stepper.type
+    ) {
+      handleSubmit(stepper.type);
     }
   }, [stepper]);
   
@@ -62,7 +89,7 @@ const StepThree = () => {
            Notification content
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          <AssignmentIcon className={classes.icon}  /> {payload.body}
+          <AssignmentIcon className={classes.icon}  /> {topicPayload.body}
         </Typography>
         <hr/>
         
@@ -70,7 +97,7 @@ const StepThree = () => {
            Target
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          <TrackChangesIcon className={classes.icon}  /> {payload.type}
+          <TrackChangesIcon className={classes.icon}  /> {topicPayload.type}
         </Typography>
         <hr/>
         

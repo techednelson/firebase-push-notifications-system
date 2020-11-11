@@ -3,24 +3,23 @@ import Dashboard from '../components/layout/Dashboard';
 import Content from '../components/layout/Content';
 import EnhancedTable from '../components/EnhancedTable';
 import { HeadCell } from '../components/common/interfaces';
-import axios from 'axios';
-import { Notification } from '../components/common/models/notification';
+import { Notification } from '../components/common/models/Notification';
 import { Typography } from '@material-ui/core';
 import { SearchWordContext } from '../components/context/SearchWordContext';
+import { axiosApiInstance } from './_app';
+import axios from 'axios';
+import { LocalStorage } from '../components/common/enums';
 
-const headCells: HeadCell[] = [{ id: 'id', label: 'ID' }, {
-  id: 'title',
-  label: 'Title',
-}, { id: 'body', label: 'Message' }, {
-  id: 'type',
-  label: 'Type',
-}, { id: 'topic', label: 'Topic' }, {
-  id: 'username',
-  label: 'Username',
-}, { id: 'createdOn', label: 'Created On' }, {
-  id: 'status',
-  label: 'Status',
-}];
+const headCells: HeadCell[] = [
+  { id: 'id', label: 'ID' },
+  { id: 'title', label: 'Title', },
+  { id: 'body', label: 'Message' },
+  { id: 'type', label: 'Type', },
+  { id: 'topic', label: 'Topic' },
+  { id: 'username', label: 'Username' },
+  { id: 'createdOn', label: 'Created On' },
+  { id: 'status', label: 'Status'}
+];
 
 const ListNotifications = () => {
   const { searchWord } = useContext(SearchWordContext);
@@ -28,7 +27,13 @@ const ListNotifications = () => {
   const [notificationsBackup, setNotificationsBackup] = useState<Notification[]>([]);
   
   useEffect(() => {
-    axios.get('http://localhost:3000/fcm-notifications')
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem(LocalStorage.FCM_TOKEN)}`,
+        'Accept': 'application/json',
+      }
+    }
+    axios.get('fcm-notifications', config)
       .then(({ data }) => {
         if (data) {
           setNotifications(data);

@@ -1,8 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post, UseGuards,
+} from '@nestjs/common';
 import { SubscribersService } from '../services/subscribers.service';
 import { SubscriptionResponseDto } from '../../common/dtos/subscription-response.dto';
+import JwtAccessTokenGuard from '../../auth/guards/jwt-access-token.guard';
 
 @Controller('fcm-subscribers')
+@UseGuards(JwtAccessTokenGuard)
 export class SubscribersController {
   
   constructor(private readonly subscribersService: SubscribersService) {
@@ -15,10 +24,10 @@ export class SubscribersController {
   
   @Post('/save')
   async save(@Body() subscriptionRequestDto: {
-    username: string; tokens: string[]; topicName: string; subscribed: boolean;
+    username: string, tokens: string[], topic: string, subscribed: boolean,
   }): Promise<boolean> {
-    const { username, tokens, topicName, subscribed } = subscriptionRequestDto;
-    return await this.subscribersService.save(username, tokens[0], topicName, subscribed);
+    const { username, tokens, topic, subscribed } = subscriptionRequestDto;
+    return await this.subscribersService.save(username, tokens[0], topic, subscribed);
   }
   
   @Get('/:id')

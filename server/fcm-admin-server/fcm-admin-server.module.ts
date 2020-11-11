@@ -8,9 +8,13 @@ import { SubscribersService } from './services/subscribers.service';
 import { FcmService } from './services/fcm.service';
 import { NotificationsService } from './services/notifications.service';
 import { Subscriber } from '../common/entities/subscriber.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Notification, Subscriber])],
+  imports: [
+    TypeOrmModule.forFeature([Notification, Subscriber]),
+     AuthModule,
+  ],
   controllers: [NotificationsController, FcmController, SubscribersController],
   providers: [SubscribersService, FcmService, NotificationsService],
 })

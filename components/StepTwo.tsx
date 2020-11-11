@@ -4,21 +4,24 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import CloudIcon from '@material-ui/icons/Cloud';
 import GroupIcon from '@material-ui/icons/Group';
-import axios from 'axios';
-import { Subscriber } from './common/models/subscriber';
+import { Subscriber } from './common/models/Subscriber';
 import { NotificationType, StepperStatus } from './common/enums';
 import { FormControl, ListItem } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { StepperContext } from './context/StepperContext';
-import { PayloadContext } from './context/PayloadContext';
+import { TopicContext } from './context/TopicContext';
 import { StepperEvent } from './common/interfaces';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import { MulticastContext } from './context/MulticastContext';
+import { Payload } from './common/models/Payload';
+import { SingleContext } from './context/SingleContext';
+import { NotificationContext } from './context/NotificationContext';
+import { axiosApiInstance } from '../pages/_app';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -37,10 +40,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const StepTwo = () => {
   const classes = useStyles();
   const { stepper, setStepper } = useContext(StepperContext);
-  const { payload, setPayload } = useContext(PayloadContext);
+  const { notification } = useContext(NotificationContext);
+  const { topicPayload, setTopicPayload } = useContext(TopicContext);
+  const { singlePayload, setSinglePayload } = useContext(SingleContext);
   const { multicast, setMulticast } = useContext(MulticastContext);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
-  const [selected, setSelected] = useState<Subscriber[]>([]);
+  const [selected, setSelected] = useState<Payload[]>([]);
   const [tokens, setTokens] = useState<string[]>([]);
   const [topics, setTopics] = useState<string[]>([]);
   const [topic, setTopic] = useState<string>('');
@@ -50,20 +55,21 @@ const StepTwo = () => {
   useEffect(() => fetchTopics(), []);
   
   const handleSubmit = () => {
-    let type: NotificationType;
+    let notificationType: NotificationType;
+     const { title, body } = notification;
     if (value === NotificationType.TOPIC) {
-      type = value;
-      setPayload({
-        ...payload, topic, type: NotificationType.TOPIC,
+      notificationType = value;
+      setTopicPayload({
+        ...topicPayload, title, body, topic, type: value,
       });
     } else if (selected.length === 1) {
-      type = NotificationType.SINGLE;
-      const { topic, username } = selected[0];
-      setPayload({
-        ...payload, type: NotificationType.SINGLE, topic, username
+      notificationType = NotificationType.SINGLE;
+      const { topic, username, token, type } = selected[0];
+      setSinglePayload({
+        ...singlePayload, title, body, type, topic, username, token
       });
     } else {
-      type = NotificationType.MULTICAST;
+      notificationType = NotificationType.MULTICAST;
       setMulticast({
         ...multicast, subscribers: selected, tokens
       });
@@ -71,7 +77,7 @@ const StepTwo = () => {
     setStepper((prevActiveStep: StepperEvent) => ({
       status: StepperStatus.VALID,
       activeStep: prevActiveStep.activeStep + 1,
-      type
+      type: notificationType
     }));
   };
   
@@ -82,7 +88,7 @@ const StepTwo = () => {
   }, [stepper]);
   
   const fetchSubscribers = () => {
-    axios.get('http://localhost:3000/fcm-subscribers')
+    axiosApiInstance.get('fcm-subscribers')
       .then(({ data }) => {
         if (data) {
           setSubscribers(data);
@@ -92,7 +98,7 @@ const StepTwo = () => {
   };
   
   const fetchTopics = () => {
-    axios.get('http://localhost:3000/fcm-notifications/topics')
+    axiosApiInstance.get('fcm-notifications/topics')
       .then(({ data }) => {
         if (data) {
           setTopics(data.topics);
@@ -113,7 +119,16 @@ const StepTwo = () => {
     setChecked(newChecked);
     
     const newSelected = [...selected];
-    newSelected.push(item);
+    
+    const newPayload = new Payload();
+    newPayload.title = notification.title;
+    newPayload.body = notification.body;
+    newPayload.type = NotificationType.MULTICAST;
+    newPayload.topic = item.topic;
+    newPayload.username = item.username;
+    newPayload.token = item.token;
+    
+    newSelected.push(newPayload);
     setSelected(newSelected);
     
     const newTokens = [...tokens];

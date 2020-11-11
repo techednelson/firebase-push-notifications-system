@@ -14,7 +14,9 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "@nestjs/common": "^7.0.0",
+    "@nestjs/config": "^0.5.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/jwt": "^7.1.0",
     "@nestjs/passport": "^7.1.0",
@@ -52,6 +54,7 @@
     "@types/firebase": "^3.2.1",
     "@types/jest": "26.0.10",
     "@types/node": "^13.9.1",
+    "@types/passport-jwt": "^3.0.3",
     "@types/react": "^16.9.51",
     "@types/react-window": "^1.8.2",
     "@types/supertest": "^2.0.8",

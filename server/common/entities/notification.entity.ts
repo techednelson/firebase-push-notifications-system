@@ -6,19 +6,27 @@ export class Notification {
   // @ObjectIdColumn()
   // _id: number;
   
-  @PrimaryGeneratedColumn() id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
   
-  @Column() title: string;
+  @Column()
+  title: string;
   
-  @Column() body: string;
+  @Column()
+  body: string;
   
-  @Column() type: NotificationType;
+  @Column()
+  type: NotificationType;
   
-  @Column() topic: string;
+  @Column()
+  topic: string;
   
-  @Column() username: string;
+  @Column()
+  username: string;
   
-  @Column() createdOn: string;
+  @Column()
+  createdOn: string;
   
-  @Column() status: NotificationStatus;
+  @Column()
+  status: NotificationStatus;
 }

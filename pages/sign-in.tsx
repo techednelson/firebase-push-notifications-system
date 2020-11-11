@@ -1,6 +1,6 @@
 import React from 'react';
 import Login from '../components/Login';
 
-const Index = () => <Login />;
+const SignIn = () => <Login isLogin={true} />;
 
-export default Index;
+export default SignIn;

@@ -11,6 +11,7 @@ import { NotificationStatus } from '../../common/enums';
 import { MulticastRequestDto } from '../../common/dtos/multicast-request.dto';
 import Message = admin.messaging.Message;
 import MulticastMessage = admin.messaging.MulticastMessage;
+import { UnsubscriptionRequestDto } from '../../common/dtos/unsubscription-request.dto';
 
 @Injectable()
 export class FcmService {
@@ -27,33 +28,34 @@ export class FcmService {
   }
   
   async subscribeToTopic(subscriptionRequestDto: SubscriptionRequestDto): Promise<string> {
-    const { username, tokens, topicName } = subscriptionRequestDto;
+    const { username, tokens, topic } = subscriptionRequestDto;
     try {
       const response = await admin
         .messaging()
-        .subscribeToTopic(tokens, topicName);
+        .subscribeToTopic(tokens, topic);
       console.log(response);
-      await this.subscribersService.save(username, tokens[0], topicName, true);
-      return `Successfully subscribed to topic: ${topicName}`;
+      await this.subscribersService.save(username, tokens[0], topic, true);
+      return `Successfully subscribed to topic: ${topic}`;
     } catch (error) {
-      console.log(`Error subscribing to topic: ${topicName}`, error);
-      throw new InternalServerErrorException(`Error subscribing to topic: ${topicName}`);
+      console.log(`Error subscribing to topic: ${topic}`, error);
+      throw new InternalServerErrorException(`Error subscribing to topic: ${topic}`);
     }
   }
   
-  async unsubscribeFromTopic(subscriptionRequestDto: SubscriptionRequestDto): Promise<string> {
-    const { username, tokens, topicName } = subscriptionRequestDto;
-    try {
-      const response = await admin
-        .messaging()
-        .unsubscribeFromTopic(tokens, topicName);
-      console.log(response);
-      await this.subscribersService.save(username, tokens[0], topicName, false);
-      return `Successfully unsubscribed to topic: ${topicName}`;
-    } catch (error) {
-      console.log(`Error unsubscribing to topic: ${topicName}`, error);
-      throw new InternalServerErrorException(`Error unsubscribing to topic: ${topicName}`);
-    }
+  async unsubscribeFromTopic(unsubscriptionRequestDto: UnsubscriptionRequestDto): Promise<string> {
+    const { users, subscriptions } = unsubscriptionRequestDto;
+    // try {
+    //   const response = await admin
+    //     .messaging()
+    //     .unsubscribeFromTopic(tokens, topicName);
+    //   console.log(response);
+    //   await this.subscribersService.save(username, tokens[0], topicName, false);
+    //   return `Successfully unsubscribed to topic: ${topicName}`;
+    // } catch (error) {
+    //   console.log(`Error unsubscribing to topic: ${topicName}`, error);
+    //   throw new InternalServerErrorException(`Error unsubscribing to topic: ${topicName}`);
+    // }
+    return '';
   }
   
   async sendPushNotificationToDevice(notificationPayloadDto: NotificationRequestDto): Promise<string> {
