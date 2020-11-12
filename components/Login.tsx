@@ -146,10 +146,10 @@ const Login = (props: LoginProps) => {
       : { username, password, confirmPassword };
     try {
       const response = await axios.post(`auth/${domain}`, data);
-      if (response.data && response.data.accessToken) {
-        localStorage.setItem(LocalStorage.FCM_TOKEN, response.data.accessToken);
-        localStorage.setItem(LocalStorage.FCM_REFRESH_TOKEN, response.data.refreshToken);
-        localStorage.setItem(LocalStorage.FCM_USERNAME, username);
+      if (response.data && response.status === 200) {
+        // localStorage.setItem(LocalStorage.FCM_TOKEN, response.data.accessToken);
+        // localStorage.setItem(LocalStorage.FCM_REFRESH_TOKEN, response.data.refreshToken);
+        // localStorage.setItem(LocalStorage.FCM_USERNAME, username);
         await router.push('/list-notifications');
       } else if (response.status === 201 && domain === 'signup') {
         setSnackbar(success);

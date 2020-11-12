@@ -5,12 +5,16 @@ import { JwtPayload } from '../../common/interfaces';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../common/entities/user.entity';
 import { Repository } from 'typeorm';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtAccessTokenStrategy extends PassportStrategy(Strategy, 'jwt-access-token') {
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) =>
+        request && request.cookies && request.cookies['FCM-ACCESS-TOKEN']
+      ]),
+      ignoreExpiration: false,
       secretOrKey: `${process.env.JWT_SECRET_OR_KEY}`,
     });
   }

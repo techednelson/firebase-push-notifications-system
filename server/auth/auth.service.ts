@@ -1,18 +1,21 @@
 import {
-  ConflictException, HttpException,
+  ConflictException,
+  HttpException,
   HttpStatus,
-  Injectable,
+  Injectable, NotFoundException,
+  Req,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../common/entities/user.entity';
 import { Repository } from 'typeorm';
-import { SignInRequestDto } from '../common/dtos/sign-in-request.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../common/interfaces';
 import { SignUpDto } from '../common/dtos/sign-up.dto';
-import { SignInResponseDto } from '../common/dtos/sign-in-response.dto';
+import { Request, Response } from 'express';
+import cookie from 'cookie';
 
 @Injectable()
 export class AuthService {
@@ -59,6 +62,15 @@ export class AuthService {
     });
   }
   
+  private async getRefreshToken(payload: JwtPayload, id: number): Promise<string> {
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: `${process.env.JWT_REFRESH_SECRET_OR_KEY}`,
+      expiresIn: 86400
+    });
+    await this.setCurrentRefreshToken(refreshToken, id );
+    return refreshToken;
+  }
+  
   getAccessToken(payload: JwtPayload): string {
     return this.jwtService.sign(payload, {
       secret: `${process.env.JWT_SECRET_OR_KEY}`,
@@ -66,27 +78,67 @@ export class AuthService {
     });
   }
   
-  private getRefreshToken(payload: JwtPayload): string {
-    return this.jwtService.sign(payload, {
-      secret: `${process.env.JWT_REFRESH_SECRET_OR_KEY}`,
-      expiresIn: `1d`,
+  private static setCookies(accessToken: string, refreshToken?: string): string[] {
+    const cookies = [];
+    const accessTokenCookie = cookie.serialize('FCM-ACCESS-TOKEN', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 900,
+      path: '/'
     });
+    cookies.push(accessTokenCookie);
+    if (refreshToken) {
+      const refreshTokenCookie = cookie.serialize('FCM-REFRESH-TOKEN', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 86400,
+        path: '/'
+      });
+      cookies.push(refreshTokenCookie);
+    }
+    return cookies;
   }
   
-  async login(signInDto: SignInRequestDto): Promise<SignInResponseDto> {
-    const { username, password } = signInDto;
+  async login(@Req() request: Request, @Res() response: Response): Promise<Response> {
+    const { username, password } = request.body;
     const user = await this.userRepository.findOne({ username });
     if (user && await bcrypt.compare(password, user.password)) {
       const payload: JwtPayload = { username };
       const accessToken = this.getAccessToken(payload);
-      const refreshToken = this.getRefreshToken(payload);
-      await this.setCurrentRefreshToken(refreshToken, user.id );
-      return { accessToken, refreshToken };
+      const refreshToken = await this.getRefreshToken(payload, user.id);
+      response.setHeader('Set-Cookie', AuthService.setCookies(accessToken, refreshToken));
+      return response.sendStatus(HttpStatus.OK);
     } else if (!user) {
       throw new HttpException(`${username} does not exist`, HttpStatus.NOT_FOUND);
     } else {
       throw new UnauthorizedException('Invalid credentials');
     }
+  }
+  
+  async renewAccessToken(@Req() request: Request, @Res() response: Response): Promise<Response> {
+    const { username } = request.body;
+    const accessToken = this.getAccessToken({ username });
+    response.setHeader('Set-Cookie', AuthService.setCookies(request.csrfToken(), accessToken));
+    return response.sendStatus(HttpStatus.OK);
+  }
+  
+  getCookiesForLogOut(): string[] {
+    return [
+      'FCM-ACCESS-TOKEN=; HttpOnly; Path=/; Max-Age=0',
+      'FCM-REFRESH-TOKEN=; HttpOnly; Path=/; Max-Age=0'
+    ];
+  }
+  
+  async removeRefreshToken(username: string) {
+    const user = await this.userRepository.findOne({ username });
+    if (!user) {
+      throw new NotFoundException(`${username} was not found`);
+    }
+    return this.userRepository.update(user.id, {
+      currentHashedRefreshToken: ''
+    });
   }
   
   async isAdminUser(): Promise<boolean> {

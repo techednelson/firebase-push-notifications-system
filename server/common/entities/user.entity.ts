@@ -17,5 +17,5 @@ export class User {
   password: string;
   
   @Column()
-  public currentHashedRefreshToken?: string;
+  public currentHashedRefreshToken: string;
 }

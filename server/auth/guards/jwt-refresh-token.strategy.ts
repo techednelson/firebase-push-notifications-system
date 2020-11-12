@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../common/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AuthService } from '../auth.service';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
@@ -14,7 +15,9 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
     private authService: AuthService
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromHeader('fcm_refresh_token'),
+      jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) =>
+        request && request.cookies && request.cookies['FCM-REFRESH-TOKEN']
+      ]),
       ignoreExpiration: false,
       secretOrKey: `${process.env.JWT_REFRESH_SECRET_OR_KEY}`,
       passReqToCallback: true
@@ -23,8 +26,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
   
   async validate(request: Request, payload: JwtPayload): Promise<User> {
     const { username } = payload;
-    // @ts-ignore
-    const refreshToken= request.headers['fcm_refresh_token'];
+    const refreshToken= request && request.cookies && request.cookies['FCM-REFRESH-TOKEN'];
     const user = await this.authService.getUserIfRefreshTokenMatches(refreshToken, username);
     if (!user) {
       throw new UnauthorizedException();

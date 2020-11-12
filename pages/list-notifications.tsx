@@ -27,13 +27,7 @@ const ListNotifications = () => {
   const [notificationsBackup, setNotificationsBackup] = useState<Notification[]>([]);
   
   useEffect(() => {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem(LocalStorage.FCM_TOKEN)}`,
-        'Accept': 'application/json',
-      }
-    }
-    axios.get('fcm-notifications', config)
+    axios.get('fcm-notifications')
       .then(({ data }) => {
         if (data) {
           setNotifications(data);

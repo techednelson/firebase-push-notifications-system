@@ -19,7 +19,6 @@ export class FcmAdminClientController {
   
   @Get('/list-notifications')
   async showListNotificationsPage(@Req() req: IncomingMessage, @Res() res: ServerResponse): Promise<void> {
-    console.log(req.headers);
     await this.next.render('/list-notifications', req, res);
   }
   
