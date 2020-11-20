@@ -4,7 +4,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { AuthService } from './auth/auth.service';
 
 @Controller()
-export class FcmAdminClientController {
+export class NextClientController {
   constructor(
     private readonly authService: AuthService,
     private readonly next: NextService

@@ -82,7 +82,7 @@ export class AuthService {
     const cookies = [];
     const accessTokenCookie = cookie.serialize('FCM-ACCESS-TOKEN', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.DEVELOPMENT !== 'development',
       sameSite: 'strict',
       maxAge: 900,
       path: '/'
@@ -91,7 +91,7 @@ export class AuthService {
     if (refreshToken) {
       const refreshTokenCookie = cookie.serialize('FCM-REFRESH-TOKEN', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.DEVELOPMENT !== 'development',
         sameSite: 'strict',
         maxAge: 86400,
         path: '/'
@@ -120,7 +120,7 @@ export class AuthService {
   async renewAccessToken(@Req() request: Request, @Res() response: Response): Promise<Response> {
     const { username } = request.body;
     const accessToken = this.getAccessToken({ username });
-    response.setHeader('Set-Cookie', AuthService.setCookies(request.csrfToken(), accessToken));
+    response.setHeader('Set-Cookie', AuthService.setCookies(accessToken));
     return response.sendStatus(HttpStatus.OK);
   }
   

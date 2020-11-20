@@ -3,7 +3,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Notification } from '../../common/entities/notification.entity';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { NotificationResponseDto } from '../../common/dtos/notification-response.dto';
 import { NotificationStatus, NotificationType } from '../../common/enums';
 import { TopicsResponseDto } from '../../common/dtos/topics-response.dto';
@@ -11,7 +11,10 @@ import { TopicsResponseDto } from '../../common/dtos/topics-response.dto';
 @Injectable()
 export class NotificationsService {
   
-  constructor(@InjectRepository(Notification) private notificationRepository: Repository<Notification>) {
+  constructor(
+    @InjectRepository(Notification) private notificationRepository: Repository<Notification>,
+    private connection: Connection
+  ) {
   }
   
   async findAll(): Promise<NotificationResponseDto[]> {
@@ -68,16 +71,22 @@ export class NotificationsService {
     return `Notification with id: ${id} not found`;
   }
   
-  async deleteById(id: number): Promise<string> {
-    const notification = this.findById(id);
-    if (notification) {
-      try {
-        await this.notificationRepository.delete(id);
-        return `Notification with id: ${id} was deleted`;
-      } catch (error) {
-        throw new ConflictException(error);
+  async deleteById(ids: number[]): Promise<void> {
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      for (const id of ids) {
+        const notification = await this.findById(id);
+        if (notification) {
+          await queryRunner.manager.delete(Notification, id);
+        }
       }
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
     }
-    return `Notification with id: ${id} was deleted`;
   }
 }

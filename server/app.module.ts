@@ -7,14 +7,14 @@ import { typeOrmPostgresConfig } from './common/config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { FcmAdminServerModule } from './fcm-admin-server/fcm-admin-server.module';
 import { User } from './common/entities/user.entity';
-import { FcmAdminClientController } from './fcm-admin-client.controller';
+import { NextClientController } from './next-client.controller';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './common/config/.env'
+      envFilePath: './server/common/config/.env'
     }),
     TypeOrmModule.forRoot(typeOrmPostgresConfig),
     TypeOrmModule.forFeature([User]),
@@ -22,7 +22,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     FcmAdminServerModule
   ],
-  controllers: [FcmAdminClientController],
+  controllers: [NextClientController],
   providers: [],
 })
 export class AppModule implements NestModule {

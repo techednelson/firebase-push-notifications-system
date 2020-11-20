@@ -1,10 +1,5 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post, UseGuards,
+  Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, UseGuards,
 } from '@nestjs/common';
 import { NotificationResponseDto } from '../../common/dtos/notification-response.dto';
 import { NotificationStatus, NotificationType } from '../../common/enums';
@@ -42,8 +37,9 @@ export class NotificationsController {
     return this.notificationsService.findById(id);
   }
   
-  @Delete('/:id')
-  async deleteById(@Param('id') id: number): Promise<void> {
-    await this.notificationsService.deleteById(id);
+  @Post('/delete')
+  @HttpCode(200)
+  async deleteById(@Body() ids: number[]): Promise<void> {
+    await this.notificationsService.deleteById(ids);
   }
 }

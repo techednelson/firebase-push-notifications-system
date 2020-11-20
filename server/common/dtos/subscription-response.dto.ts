@@ -3,4 +3,5 @@ export class SubscriptionResponseDto {
   username: string;
   token: string;
   topic: string;
+  subscribed: boolean;
 }

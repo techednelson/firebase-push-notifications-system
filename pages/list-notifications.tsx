@@ -7,8 +7,6 @@ import { Notification } from '../components/common/models/Notification';
 import { Typography } from '@material-ui/core';
 import { SearchWordContext } from '../components/context/SearchWordContext';
 import { axiosApiInstance } from './_app';
-import axios from 'axios';
-import { LocalStorage } from '../components/common/enums';
 
 const headCells: HeadCell[] = [
   { id: 'id', label: 'ID' },
@@ -27,7 +25,7 @@ const ListNotifications = () => {
   const [notificationsBackup, setNotificationsBackup] = useState<Notification[]>([]);
   
   useEffect(() => {
-    axios.get('fcm-notifications')
+    axiosApiInstance.get('fcm-notifications')
       .then(({ data }) => {
         if (data) {
           setNotifications(data);
@@ -51,7 +49,8 @@ const ListNotifications = () => {
     setNotifications(filtered);
   }, [searchWord]);
   
-  return (<Dashboard>
+  return (
+    <Dashboard>
       <Content>
         {notifications.length === 0 ? (
           <Typography color="textSecondary" align="center">
@@ -59,7 +58,8 @@ const ListNotifications = () => {
           </Typography>) : (
           <EnhancedTable rows={notifications} headCells={headCells} />)}
       </Content>
-    </Dashboard>);
+    </Dashboard>
+  );
 };
 
 export default ListNotifications;

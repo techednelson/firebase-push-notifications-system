@@ -6,7 +6,6 @@ import { Subscriber } from '../components/common/models/Subscriber';
 import { HeadCell } from '../components/common/interfaces';
 import { Typography } from '@material-ui/core';
 import { SearchWordContext } from '../components/context/SearchWordContext';
-import { LocalStorage } from '../components/common/enums';
 import { axiosApiInstance } from './_app';
 
 const headCells: HeadCell[] = [

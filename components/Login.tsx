@@ -13,7 +13,6 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
-import { LocalStorage } from './common/enums';
 export type Color = 'success' | 'info' | 'warning' | 'error';
 
 const Alert = (props: AlertProps) => {
@@ -147,9 +146,6 @@ const Login = (props: LoginProps) => {
     try {
       const response = await axios.post(`auth/${domain}`, data);
       if (response.data && response.status === 200) {
-        // localStorage.setItem(LocalStorage.FCM_TOKEN, response.data.accessToken);
-        // localStorage.setItem(LocalStorage.FCM_REFRESH_TOKEN, response.data.refreshToken);
-        // localStorage.setItem(LocalStorage.FCM_USERNAME, username);
         await router.push('/list-notifications');
       } else if (response.status === 201 && domain === 'signup') {
         setSnackbar(success);
@@ -174,16 +170,27 @@ const Login = (props: LoginProps) => {
     setOpenSnackbar(false);
   };
   
-  return (<Container component="main" maxWidth="xs">
+  return (
+    <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+        <Avatar
+          className={classes.avatar}
+        >
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5" align="center">
+        <Typography
+          component="h1"
+          variant="h5"
+          align="center"
+        >
           Firebase Cloud Messaging Admin
         </Typography>
-        <form onSubmit={handleSubmit} className={classes.form} noValidate>
+        <form
+          onSubmit={handleSubmit}
+          className={classes.form}
+          noValidate
+        >
           <TextField
             variant="outlined"
             margin="normal"
@@ -237,8 +244,15 @@ const Login = (props: LoginProps) => {
           >
             {props.isLogin ? 'Sign In' : 'Sign up'}
           </Button>
-          <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity={snackbar.severity}>
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={3000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity={snackbar.severity}
+            >
               {snackbar.body}
             </Alert>
           </Snackbar>
@@ -247,7 +261,8 @@ const Login = (props: LoginProps) => {
       <Box mt={8}>
         <Copyright />
       </Box>
-    </Container>);
+    </Container>
+  );
 };
 
 export default Login;

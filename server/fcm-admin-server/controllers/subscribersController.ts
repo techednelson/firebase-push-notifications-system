@@ -31,7 +31,7 @@ export class SubscribersController {
   }
   
   @Get('/:id')
-  async findById(@Param('id') id: number): Promise<SubscriptionResponseDto | string> {
+  async findById(@Param('id') id: number): Promise<SubscriptionResponseDto | null> {
     return this.subscribersService.findById(id);
   }
   

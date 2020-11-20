@@ -12,20 +12,20 @@ import helmet from 'helmet';
   server.enableCors();
   server.use(helmet());
   server.use(cookieParser());
-  server.use(csurf({
-    cookie: {
-      key: 'XSRF_KEY',
-      httpOnly: true,
-      path: '/',
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: true,
-    }
-  }));
-  server.use((req: Request, res: Response, next: NextFunction) => {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
-    res.locals.csrftoken = req.csrfToken();
-    next();
-  });
+  // server.use(csurf({
+  //   cookie: {
+  //     key: 'XSRF_KEY',
+  //     httpOnly: true,
+  //     path: '/',
+  //     secure: process.env.DEVELOPMENT !== 'development',
+  //     sameSite: true,
+  //   }
+  // }));
+  // server.use((req: Request, res: Response, next: NextFunction) => {
+  //   res.cookie('XSRF-TOKEN', req.csrfToken());
+  //   res.locals.csrftoken = req.csrfToken();
+  //   next();
+  // });
   server.useGlobalPipes(new ValidationPipe());
   server
     .get(NextModule)
