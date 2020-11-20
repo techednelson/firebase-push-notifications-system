@@ -13,7 +13,9 @@ export const NotificationContext = createContext<NotificationContextProps>({
 
 export const NotificationContextProvider = (props: any) => {
   const [notification, setNotification] = useState<Message>(new Message());
-  return (<NotificationContext.Provider value={{ notification, setNotification }}>
+  return (
+    <NotificationContext.Provider value={{ notification, setNotification }}>
       {props.children}
-    </NotificationContext.Provider>);
+    </NotificationContext.Provider>
+  );
 };

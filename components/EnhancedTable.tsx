@@ -197,11 +197,14 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     width: '100%',
-  }, paper: {
+  },
+  paper: {
     width: '100%', marginBottom: theme.spacing(2),
-  }, table: {
+  },
+  table: {
     minWidth: 750,
-  }, visuallyHidden: {
+  },
+  visuallyHidden: {
     border: 0,
     clip: 'rect(0 0 0 0)',
     height: 1,
@@ -212,6 +215,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     top: 20,
     width: 1,
   },
+  truncate: {
+    maxWidth: 56.8,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }
 }));
 
 interface EnhancedTableProps {
@@ -312,7 +321,7 @@ const EnhancedTable = (props: EnhancedTableProps) => {
     subscriber.username = username;
     subscriber.token = token;
     subscriber.topic = topic;
-    subscriber.subscribed = subscribed;
+    subscriber.subscribed = !subscribed;
     await axiosApiInstance.post(`fcm/admin-toggle-subscription`, subscriber)
       .then((resp) => {
         if (resp.status === 200) {
@@ -342,6 +351,9 @@ const EnhancedTable = (props: EnhancedTableProps) => {
             </Grid>
           </Typography>
         </TableCell>;
+      }
+      if (key === 'token') {
+        return <TableCell className={classes.truncate} key={index}>{row[key]}</TableCell>;
       }
       return <TableCell key={index}>{row[key]}</TableCell>;
     });

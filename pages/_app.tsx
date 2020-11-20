@@ -11,6 +11,7 @@ import { MulticastContextProvider } from '../components/context/MulticastContext
 import { SingleContextProvider } from '../components/context/SingleContext';
 import { NotificationContextProvider } from '../components/context/NotificationContext';
 import axios from 'axios';
+import { UsernameContextProvider } from '../components/context/UsernameContext';
 
 axios.defaults.baseURL = 'http://localhost:3000/';
 
@@ -65,9 +66,11 @@ export default function MyApp(props: AppProps) {
                <StepperContextProvider>
                  <MulticastContextProvider>
                    <SingleContextProvider>
-                     {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-                     <CssBaseline />
-                     <Component {...pageProps} />
+                     <UsernameContextProvider>
+                       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                       <CssBaseline />
+                       <Component {...pageProps} />
+                     </UsernameContextProvider>
                    </SingleContextProvider>
                  </MulticastContextProvider>
                </StepperContextProvider>

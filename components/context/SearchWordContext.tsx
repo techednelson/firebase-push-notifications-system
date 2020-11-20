@@ -6,13 +6,15 @@ interface SearchWordContextProps {
 }
 
 export const SearchWordContext = createContext<SearchWordContextProps>({
-  searchWord: '', setSearchWord: () => {
-  },
+  searchWord: '',
+  setSearchWord: () => {},
 });
 
 export const SearchWordContextProvider = (props: any) => {
   const [searchWord, setSearchWord] = useState<string>('');
-  return (<SearchWordContext.Provider value={{ searchWord, setSearchWord }}>
+  return (
+    <SearchWordContext.Provider value={{ searchWord, setSearchWord }}>
       {props.children}
-    </SearchWordContext.Provider>);
+    </SearchWordContext.Provider>
+  );
 };

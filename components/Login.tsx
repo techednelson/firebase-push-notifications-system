@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +13,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
+import { UsernameContext } from './context/UsernameContext';
 export type Color = 'success' | 'info' | 'warning' | 'error';
 
 const Alert = (props: AlertProps) => {
@@ -25,12 +26,15 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  }, avatar: {
+  },
+  avatar: {
     margin: theme.spacing(1), backgroundColor: theme.palette.secondary.main,
-  }, form: {
+  },
+  form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
-  }, submit: {
+  },
+  submit: {
     margin: theme.spacing(3, 0, 2),
   },
   modal: {
@@ -70,7 +74,7 @@ const error: Snackbar = {
 
 const Login = (props: LoginProps) => {
   const classes = useStyles();
-  const [username, setUsername] = useState<string>('');
+  const {username, setUsername} = useContext(UsernameContext);
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [errors, setErrors] = useState<Errors>({

@@ -18,7 +18,9 @@ export const MulticastContext = createContext<MulticastContextProps>({
 
 export const MulticastContextProvider = (props: any) => {
   const [multicast, setMulticast] = useState<MulticastPayload>(INITIAL_STATE);
-  return (<MulticastContext.Provider value={{ multicast, setMulticast }}>
+  return (
+    <MulticastContext.Provider value={{ multicast, setMulticast }}>
       {props.children}
-    </MulticastContext.Provider>);
+    </MulticastContext.Provider>
+  );
 };

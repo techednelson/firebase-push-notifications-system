@@ -13,7 +13,9 @@ export const TopicContext = createContext<TopicContextProps>({
 
 export const TopicContextProvider = (props: any) => {
   const [topicPayload, setTopicPayload] = useState<Payload>(new Payload());
-  return (<TopicContext.Provider value={{ topicPayload, setTopicPayload }}>
+  return (
+    <TopicContext.Provider value={{ topicPayload, setTopicPayload }}>
       {props.children}
-    </TopicContext.Provider>);
+    </TopicContext.Provider>
+  );
 };

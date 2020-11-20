@@ -17,30 +17,39 @@ import Link from 'next/link';
 
 const styles = (theme: Theme) => createStyles({
   categoryHeader: {
-    paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2),
-  }, categoryHeaderPrimary: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+  },
+  categoryHeaderPrimary: {
     color: theme.palette.common.white,
-  }, item: {
+  },
+  item: {
     paddingTop: 1,
     paddingBottom: 1,
     color: 'rgba(255, 255, 255, 0.7)',
     '&:hover,&:focus': {
       backgroundColor: 'rgba(255, 255, 255, 0.08)',
     },
-  }, itemCategory: {
+  },
+  itemCategory: {
     backgroundColor: '#232f3e',
     boxShadow: '0 -1px 0 #404854 inset',
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-  }, firebase: {
+  },
+  firebase: {
     fontSize: 24, color: theme.palette.common.white,
-  }, itemActiveItem: {
+  },
+  itemActiveItem: {
     color: '#4fc3f7',
-  }, itemPrimary: {
+  },
+  itemPrimary: {
     fontSize: 'inherit',
-  }, itemIcon: {
+  },
+  itemIcon: {
     minWidth: 'auto', marginRight: theme.spacing(2),
-  }, divider: {
+  },
+  divider: {
     marginTop: theme.spacing(2),
   },
 });
@@ -69,7 +78,8 @@ const Navigator = (props: NavigatorProps) => {
   const { classes, ...other } = props;
   const [categories, setCategories] = useState(createCategories(0));
   
-  return (<Drawer variant="permanent" {...other}>
+  return (
+    <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem
           className={clsx(classes.firebase, classes.item, classes.itemCategory)}
@@ -120,7 +130,8 @@ const Navigator = (props: NavigatorProps) => {
             <Divider className={classes.divider} />
           </React.Fragment>))}
       </List>
-    </Drawer>);
+    </Drawer>
+  );
 };
 
 export default withStyles(styles)(Navigator);

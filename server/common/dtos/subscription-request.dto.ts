@@ -9,7 +9,7 @@ export class SubscriptionRequestDto {
   @IsNotEmpty()
   username: string;
   
-  @IsArray()
+  @IsString()
   @IsNotEmpty()
   token: string;
   

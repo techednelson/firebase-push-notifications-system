@@ -58,7 +58,7 @@ export class FcmService {
   async adminToggleSubscriptionToTopic(subscriptionRequestDto: SubscriptionRequestDto): Promise<string> {
     const { username, token, topic, subscribed } = subscriptionRequestDto;
     const subscriber = await this.subscribersService.findByUsername(username);
-    if (!Boolean(subscriber)) {
+    if (!subscriber) {
       throw new NotFoundException(`${username} was not found`);
     }
     if (subscribed === undefined || subscribed === null) {
@@ -71,7 +71,8 @@ export class FcmService {
       subscribed
         ? await admin.messaging().subscribeToTopic(token, topic)
         : await admin.messaging().unsubscribeFromTopic(token, topic);
-      await this.subscribersService.update(username, subscribed);
+      subscriber.subscribed = subscribed;
+      await this.subscribersService.update(username, subscriber);
       await queryRunner.commitTransaction();
       return `${username} was successfully ${subscribed ? 'subscribed' : 'unsubscribed'}`;
     } catch (error) {

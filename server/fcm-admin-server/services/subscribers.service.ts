@@ -47,9 +47,9 @@ export class SubscribersService {
   //   }
   // }
   
-    async update(username: string, subscribed: boolean): Promise<boolean> {
+    async update(username: string, subscriber: Subscriber): Promise<boolean> {
     try {
-      await this.subscriberRepository.update(username, { subscribed });
+      await this.subscriberRepository.save(subscriber);
       return true;
     } catch (error) {
       throw new ConflictException(error);

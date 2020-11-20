@@ -19,15 +19,20 @@ import { SearchWordContext } from '../context/SearchWordContext';
 const styles = (theme: Theme) => createStyles({
   paper: {
     maxWidth: 936, margin: 'auto', overflow: 'hidden',
-  }, searchBar: {
+  },
+  searchBar: {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-  }, searchInput: {
+  },
+  searchInput: {
     fontSize: theme.typography.fontSize,
-  }, block: {
+  },
+  block: {
     display: 'block',
-  }, addNotification: {
+  },
+  addNotification: {
     marginRight: theme.spacing(1),
-  }, contentWrapper: {
+  },
+  contentWrapper: {
     margin: '40px 16px',
   },
 });
@@ -40,7 +45,8 @@ const Content = (props: ContentProps) => {
   const { classes } = props;
   const { setSearchWord } = useContext(SearchWordContext);
   
-  return (<Paper className={classes.paper}>
+  return (
+    <Paper className={classes.paper}>
       <AppBar
         className={classes.searchBar}
         position="static"
@@ -84,7 +90,8 @@ const Content = (props: ContentProps) => {
       <div className={classes.contentWrapper}>
         {props.children}
       </div>
-    </Paper>);
+    </Paper>
+  );
 };
 
 export default withStyles(styles)(Content);

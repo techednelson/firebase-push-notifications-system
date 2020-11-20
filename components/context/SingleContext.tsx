@@ -13,7 +13,9 @@ export const SingleContext = createContext<SingleContextProps>({
 
 export const SingleContextProvider = (props: any) => {
   const [singlePayload, setSinglePayload] = useState<Payload>(new Payload());
-  return (<SingleContext.Provider value={{ singlePayload, setSinglePayload }}>
+  return (
+    <SingleContext.Provider value={{ singlePayload, setSinglePayload }}>
       {props.children}
-    </SingleContext.Provider>);
+    </SingleContext.Provider>
+  );
 };
