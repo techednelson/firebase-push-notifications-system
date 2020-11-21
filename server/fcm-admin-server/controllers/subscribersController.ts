@@ -24,22 +24,4 @@ export class SubscribersController {
   async findAllTopics(): Promise<TopicsResponseDto> {
     return await this.subscribersService.findAllTopics();
   }
-  
-  // @Post('/save')
-  // async save(@Body() subscriptionRequestDto: {
-  //   username: string, tokens: string[], topic: string, subscribed: boolean,
-  // }): Promise<boolean> {
-  //   const { username, tokens, topic, subscribed } = subscriptionRequestDto;
-  //   return await this.subscribersService.save(username, tokens[0], topic, subscribed);
-  // }
-  
-  // @Get('/:id')
-  // async findById(@Param('id') id: number): Promise<SubscriptionResponseDto | null> {
-  //   return this.subscribersService.findById(id);
-  // }
-  //
-  // @Delete('/:id')
-  // async deleteById(@Param('id') id: number): Promise<void> {
-  //   await this.subscribersService.deleteById(id);
-  // }
 }

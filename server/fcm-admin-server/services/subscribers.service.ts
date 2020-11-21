@@ -74,32 +74,4 @@ export class SubscribersService {
       throw new ConflictException(error);
     }
   }
-  
-  // async findById(id: number): Promise<SubscriptionResponseDto | null> {
-  //   if (!id) {
-  //     throw new BadRequestException('Format is incorrect');
-  //   }
-  //   try {
-  //     const subscriber = await this.subscriberRepository.findOne({ id });
-  //     if (subscriber) {
-  //       return subscriber as SubscriptionResponseDto;
-  //     }
-  //     return null;
-  //   } catch (error) {
-  //     throw new ConflictException(error);
-  //   }
-  // }
-  
-  // async deleteById(id: number): Promise<string> {
-  //   const subscriber = this.findById(id);
-  //   if (subscriber) {
-  //     try {
-  //       await this.subscriberRepository.delete(id);
-  //       return `Subscription with id: ${id} was deleted`;
-  //     } catch (error) {
-  //       throw new ConflictException(error);
-  //     }
-  //   }
-  //   return `Subscription with id: ${id} not found`;
-  // }
 }

@@ -17,19 +17,6 @@ export class NotificationsController {
     return await this.notificationsService.findAll();
   }
   
-  // @Post('/save')
-  // async save(@Body() notificationPayloadDto: {
-  //   title: string, body: string, topic: string, username: string, type: NotificationType, status: NotificationStatus
-  // }): Promise<boolean> {
-  //   const { title, body, topic, username, type, status } = notificationPayloadDto;
-  //   return await this.notificationsService.save(title, body, topic, username, type, status);
-  // }
-  
-  // @Get('/:id')
-  // async findById(@Param('id') id: number): Promise<NotificationResponseDto | string> {
-  //   return this.notificationsService.findById(id);
-  // }
-  
   @Post('/delete')
   @HttpCode(200)
   async deleteById(@Body() ids: number[]): Promise<void> {
