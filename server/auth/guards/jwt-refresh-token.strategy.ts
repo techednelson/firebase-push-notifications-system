@@ -27,7 +27,10 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
   async validate(request: Request, payload: JwtPayload): Promise<User> {
     const { username } = payload;
     const refreshToken= request && request.cookies && request.cookies['FCM-REFRESH-TOKEN'];
+    console.log(username);
+    console.log(refreshToken);
     const user = await this.authService.getUserIfRefreshTokenMatches(refreshToken, username);
+    console.log(user);
     if (!user) {
       throw new UnauthorizedException();
     }

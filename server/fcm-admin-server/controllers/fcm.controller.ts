@@ -1,10 +1,11 @@
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { SubscriptionRequestDto } from '../../common/dtos/subscription-request.dto';
-import { NotificationRequestDto } from '../../common/dtos/notification-request.dto';
+import { SingleRequestDto } from '../../common/dtos/single-request.dto';
 import { FcmService } from '../services/fcm.service';
 import { MulticastRequestDto } from '../../common/dtos/multicast-request.dto';
 import JwtAccessTokenGuard from '../../auth/guards/jwt-access-token.guard';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.strategy';
+import { TopicRequestDto } from '../../common/dtos/topic-request.dto';
 
 @Controller('fcm')
 export class FcmController {
@@ -28,7 +29,7 @@ export class FcmController {
   @UseGuards(JwtAccessTokenGuard)
   @Post('/token')
   @HttpCode(200)
-  async sendPushNotificationToDevice(@Body() notificationRequestDto: NotificationRequestDto): Promise<string> {
+  async sendPushNotificationToDevice(@Body() notificationRequestDto: SingleRequestDto): Promise<string> {
     return await this.fcmService.sendPushNotificationToDevice(notificationRequestDto);
   }
   
@@ -42,7 +43,7 @@ export class FcmController {
   @UseGuards(JwtAccessTokenGuard)
   @Post('/topic')
   @HttpCode(200)
-  async sendPushNotificationToTopic(@Body() notificationPayloadDto: NotificationRequestDto): Promise<string> {
-    return await this.fcmService.sendPushNotificationToTopic(notificationPayloadDto);
+  async sendPushNotificationToTopic(@Body() topicRequestDto: TopicRequestDto): Promise<string> {
+    return await this.fcmService.sendPushNotificationToTopic(topicRequestDto);
   }
 }

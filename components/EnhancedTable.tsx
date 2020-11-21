@@ -108,7 +108,8 @@ const useToolbarStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(1),
-  }, highlight: theme.palette.type === 'light' ? {
+  },
+  highlight: theme.palette.type === 'light' ? {
     color: theme.palette.secondary.main,
     backgroundColor: lighten(theme.palette.secondary.light, 0.85),
   } : {
@@ -199,7 +200,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     width: '100%',
   },
   paper: {
-    width: '100%', marginBottom: theme.spacing(2),
+    width: '100%',
+    marginBottom: theme.spacing(2),
   },
   table: {
     minWidth: 750,

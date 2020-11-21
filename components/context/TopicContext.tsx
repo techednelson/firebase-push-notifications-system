@@ -1,18 +1,18 @@
 import React, { createContext, useState } from 'react';
-import { Payload } from '../common/models/Payload';
+import { TopicPayload } from '../common/models/TopicPayload';
 
 interface TopicContextProps {
-  topicPayload: Payload;
+  topicPayload: TopicPayload;
   setTopicPayload: Function;
 }
 
 export const TopicContext = createContext<TopicContextProps>({
-  topicPayload: new Payload(),
+  topicPayload: new TopicPayload(),
   setTopicPayload: () => {},
 });
 
 export const TopicContextProvider = (props: any) => {
-  const [topicPayload, setTopicPayload] = useState<Payload>(new Payload());
+  const [topicPayload, setTopicPayload] = useState<TopicPayload>(new TopicPayload());
   return (
     <TopicContext.Provider value={{ topicPayload, setTopicPayload }}>
       {props.children}

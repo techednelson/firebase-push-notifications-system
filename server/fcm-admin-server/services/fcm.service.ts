@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { SubscriptionRequestDto } from '../../common/dtos/subscription-request.dto';
 import admin, { ServiceAccount } from 'firebase-admin';
-import { NotificationRequestDto } from '../../common/dtos/notification-request.dto';
+import { SingleRequestDto } from '../../common/dtos/single-request.dto';
 import serviceAccount from '../../common/config/serviceAccountKey.json';
 import { NotificationsService } from './notifications.service';
 import { SubscribersService } from './subscribers.service';
@@ -14,6 +14,7 @@ import { MulticastRequestDto } from '../../common/dtos/multicast-request.dto';
 import Message = admin.messaging.Message;
 import MulticastMessage = admin.messaging.MulticastMessage;
 import { Connection } from 'typeorm';
+import { TopicRequestDto } from '../../common/dtos/topic-request.dto';
 
 @Injectable()
 export class FcmService {
@@ -83,7 +84,7 @@ export class FcmService {
     }
   }
   
-  async sendPushNotificationToDevice(notificationPayloadDto: NotificationRequestDto): Promise<string> {
+  async sendPushNotificationToDevice(notificationPayloadDto: SingleRequestDto): Promise<string> {
     if (notificationPayloadDto.token === '') {
       throw new BadRequestException('Token can not be empty');
     }
@@ -145,14 +146,18 @@ export class FcmService {
     }
   }
   
-  async sendPushNotificationToTopic(notificationPayloadDto: NotificationRequestDto): Promise<string> {
-    const { title, body, type, topic, username } = notificationPayloadDto;
+  async sendPushNotificationToTopic(topicRequestDto: TopicRequestDto): Promise<string> {
+    const { title, body, type, topic, username } = topicRequestDto;
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
       const message: Message = {
-        data: { title, body }, topic,
+        data: {
+          title,
+          body
+        },
+        topic,
       };
       await admin.messaging().send(message);
       await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.COMPLETED);
@@ -162,20 +167,18 @@ export class FcmService {
        await queryRunner.rollbackTransaction();
       try {
         await this.notificationsService.save(title, body, topic, username, type, NotificationStatus.FAILED);
-        console.log(`Error sending push notification to topic: ${topic}`, error);
         await queryRunner.commitTransaction();
+        return `Error sending push notification to topic: ${topic}`;
       } catch (error) {
         await queryRunner.rollbackTransaction();
         throw new InternalServerErrorException(`Error sending push notification to topic: ${topic}`);
       } finally {
         await queryRunner.release();
       }
-      console.log(`Error sending push notification to username: ${username}`, error);
-      throw new InternalServerErrorException(`Error sending push notification to username: ${username}`);
     }
   }
   
-  private async saveMulticastNotifications(subscribers: NotificationRequestDto[], success: boolean) {
+  private async saveMulticastNotifications(subscribers: SingleRequestDto[], success: boolean) {
     await subscribers.forEach(subscriber => {
       const { title, body, topic, username, type } = subscriber;
       this.notificationsService.save(title, body, topic, username, type, success ? NotificationStatus.COMPLETED : NotificationStatus.FAILED);

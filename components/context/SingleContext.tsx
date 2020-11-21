@@ -1,18 +1,18 @@
 import React, { createContext, useState } from 'react';
-import { Payload } from '../common/models/Payload';
+import { SinglePayload } from '../common/models/SinglePayload';
 
 interface SingleContextProps {
-  singlePayload: Payload;
+  singlePayload: SinglePayload;
   setSinglePayload: Function;
 }
 
 export const SingleContext = createContext<SingleContextProps>({
-  singlePayload: new Payload(),
+  singlePayload: new SinglePayload(),
   setSinglePayload: () => {},
 });
 
 export const SingleContextProvider = (props: any) => {
-  const [singlePayload, setSinglePayload] = useState<Payload>(new Payload());
+  const [singlePayload, setSinglePayload] = useState<SinglePayload>(new SinglePayload());
   return (
     <SingleContext.Provider value={{ singlePayload, setSinglePayload }}>
       {props.children}

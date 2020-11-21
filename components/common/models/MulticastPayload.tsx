@@ -1,6 +1,6 @@
-import { Payload } from './Payload';
+import { SinglePayload } from './SinglePayload';
 
 export class MulticastPayload {
-  subscribers: Payload[];
+  subscribers: SinglePayload[];
   tokens: string[];
 }

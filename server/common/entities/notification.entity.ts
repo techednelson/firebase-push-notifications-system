@@ -3,8 +3,6 @@ import { NotificationStatus, NotificationType } from '../enums';
 
 @Entity('notification')
 export class Notification {
-  // @ObjectIdColumn()
-  // _id: number;
   
   @PrimaryGeneratedColumn()
   id: number;

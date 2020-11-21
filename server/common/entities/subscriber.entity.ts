@@ -3,9 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 @Entity('subscriber')
 @Unique(['username'])
 export class Subscriber {
-  // @ObjectIdColumn()
-  // _id: number;
-  
+
   @PrimaryGeneratedColumn()
   id: number;
   

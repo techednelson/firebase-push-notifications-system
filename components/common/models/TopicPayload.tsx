@@ -1,10 +1,9 @@
 import { NotificationType } from '../../../server/common/enums';
 
-export class Payload {
+export class TopicPayload {
   title = '';
   body = '';
   type = NotificationType.TOPIC;
   topic = '';
   username = '';
-  token = '';
 }

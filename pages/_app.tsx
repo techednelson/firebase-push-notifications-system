@@ -12,6 +12,9 @@ import { SingleContextProvider } from '../components/context/SingleContext';
 import { NotificationContextProvider } from '../components/context/NotificationContext';
 import axios from 'axios';
 import { UsernameContextProvider } from '../components/context/UsernameContext';
+import { UsernamesCheckedContextProvider } from '../components/context/UsernamesCheckedContext';
+import { UsernamesSelectedContextProvider } from '../components/context/UsernamesSelectedContext';
+import { TargetContextProvider } from '../components/context/TargetContext';
 
 axios.defaults.baseURL = 'http://localhost:3000/';
 
@@ -35,7 +38,7 @@ axiosApiInstance.interceptors.response.use((response) => {
   return response
 }, async function (error) {
   const originalRequest = error.config;
-  if ( error.response.status === 401 && !originalRequest._retry) {
+  if (error.response.status === 401 && !originalRequest._retry) {
     originalRequest._retry = true;
     await axios.post(`auth/refresh`);
     return axiosApiInstance(originalRequest);
@@ -67,9 +70,15 @@ export default function MyApp(props: AppProps) {
                  <MulticastContextProvider>
                    <SingleContextProvider>
                      <UsernameContextProvider>
-                       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-                       <CssBaseline />
-                       <Component {...pageProps} />
+                       <UsernamesCheckedContextProvider>
+                         <UsernamesSelectedContextProvider>
+                           <TargetContextProvider>
+                             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                             <CssBaseline />
+                             <Component {...pageProps} />
+                           </TargetContextProvider>
+                         </UsernamesSelectedContextProvider>
+                       </UsernamesCheckedContextProvider>
                      </UsernameContextProvider>
                    </SingleContextProvider>
                  </MulticastContextProvider>

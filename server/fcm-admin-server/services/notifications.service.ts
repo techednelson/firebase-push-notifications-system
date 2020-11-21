@@ -6,7 +6,6 @@ import { Notification } from '../../common/entities/notification.entity';
 import { Connection, Repository } from 'typeorm';
 import { NotificationResponseDto } from '../../common/dtos/notification-response.dto';
 import { NotificationStatus, NotificationType } from '../../common/enums';
-import { TopicsResponseDto } from '../../common/dtos/topics-response.dto';
 
 @Injectable()
 export class NotificationsService {
@@ -20,21 +19,6 @@ export class NotificationsService {
   async findAll(): Promise<NotificationResponseDto[]> {
     const notifications = await this.notificationRepository.find();
     return notifications.map(notification => notification as NotificationResponseDto);
-  }
-  
-  async findAllTopics(): Promise<TopicsResponseDto> {
-    try {
-      const response = await this.notificationRepository
-        .createQueryBuilder('notification.topic')
-        .distinct(true)
-        .getMany();
-      const dto = new TopicsResponseDto();
-      dto.topics = response.map(obj => obj.topic);
-      return dto;
-    } catch (error) {
-      console.log(error);
-      throw new ConflictException(error);
-    }
   }
   
   async save(title: string, body: string, topic: string, username: string, type: NotificationType, status: NotificationStatus): Promise<boolean> {

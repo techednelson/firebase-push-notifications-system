@@ -1,11 +1,11 @@
 import { ArrayMinSize, IsArray } from 'class-validator';
-import { NotificationRequestDto } from './notification-request.dto';
+import { SingleRequestDto } from './single-request.dto';
 
 export class MulticastRequestDto {
   
   @IsArray()
   @ArrayMinSize(1)
-  subscribers: NotificationRequestDto[];
+  subscribers: SingleRequestDto[];
   
   @IsArray()
   @ArrayMinSize(1)

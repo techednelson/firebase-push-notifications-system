@@ -1,7 +1,5 @@
-import {
-  ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsString, MaxLength, MinLength,
-} from 'class-validator';
-import { IsNull } from 'typeorm';
+import { IsBoolean, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+
 
 export class SubscriptionRequestDto {
   

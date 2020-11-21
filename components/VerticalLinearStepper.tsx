@@ -18,11 +18,14 @@ import StepThree from './StepThree';
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     maxWidth: '80%',
-  }, resetContainer: {
+  },
+  resetContainer: {
     padding: theme.spacing(3),
-  }, button: {
+  },
+  button: {
     marginTop: theme.spacing(1), marginRight: theme.spacing(1),
-  }, actionsContainer: {
+  },
+  actionsContainer: {
     marginBottom: theme.spacing(2),
   },
 }));
@@ -66,7 +69,7 @@ const VerticalLinearStepper = () => {
         activeStep: prevActiveStep.activeStep
       }));
     }
-  }, [topicPayload, stepper]);
+  }, [stepper]);
   
   const handleBack = () => {
     setStepper((prevActiveStep: StepperEvent) => ({

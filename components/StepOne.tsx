@@ -91,7 +91,8 @@ const StepOne = () => {
     }
   }, [stepper]);
   
-  return (<form className={classes.root} noValidate autoComplete="off">
+  return (
+    <form className={classes.root} noValidate autoComplete="off">
       <TextField
         error={!isTitleValid}
         id="title"
@@ -112,6 +113,7 @@ const StepOne = () => {
         onChange={handleInput}
         value={body}
       />
-    </form>);
+    </form>
+  );
 };
 export default StepOne;

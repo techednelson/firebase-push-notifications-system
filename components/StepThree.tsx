@@ -11,6 +11,9 @@ import ScheduleIcon from '@material-ui/icons/Schedule';
 import { NotificationType, StepperStatus } from './common/enums';
 import { MulticastContext } from './context/MulticastContext';
 import { SingleContext } from './context/SingleContext';
+import { NotificationContext } from './context/NotificationContext';
+import { axiosApiInstance } from '../pages/_app';
+import { router } from 'next/client';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
    root: {
@@ -39,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const StepThree = () => {
   const classes = useStyles();
   const { stepper } = useContext(StepperContext);
+  const { notification } = useContext(NotificationContext);
   const { topicPayload } = useContext(TopicContext);
   const { singlePayload } = useContext(SingleContext);
   const { multicast } = useContext(MulticastContext);
@@ -48,27 +52,27 @@ const StepThree = () => {
     let body;
     switch (type) {
       case NotificationType.SINGLE:
-        url = 'http://localhost:3000/fcm/token';
+        url = 'fcm/token';
         body = singlePayload;
         break;
       case NotificationType.MULTICAST:
-        url = 'http://localhost:3000/fcm/multicast';
+        url = 'fcm/multicast';
         body = multicast;
         break;
       case NotificationType.TOPIC:
-        url = 'http://localhost:3000/fcm/topic';
+        url = 'fcm/topic';
         body = topicPayload;
         break;
     }
-    console.log(url);
-    console.log(body);
-     // axios.post(url, body)
-     //      .then(response => console.log(response))
-     //      .catch(error => console.log(error));
+    axiosApiInstance.post(url, body)
+      .then(response => {
+        console.log(response);
+        router.push('list-notifications').then();
+      })
+      .catch(error => console.log(error));
   };
   
   useEffect(() => {
-    console.log(stepper);
     if (
       stepper.status === StepperStatus.VALIDATING &&
       stepper.activeStep === 2 &&
@@ -89,7 +93,7 @@ const StepThree = () => {
            Notification content
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          <AssignmentIcon className={classes.icon}  /> {topicPayload.body}
+          <AssignmentIcon className={classes.icon}  /> {notification.body}
         </Typography>
         <hr/>
         

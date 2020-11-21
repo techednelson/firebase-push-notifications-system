@@ -1,14 +1,12 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
-  Param,
-  Post, UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { SubscribersService } from '../services/subscribers.service';
 import { SubscriptionResponseDto } from '../../common/dtos/subscription-response.dto';
 import JwtAccessTokenGuard from '../../auth/guards/jwt-access-token.guard';
+import { TopicsResponseDto } from '../../common/dtos/topics-response.dto';
 
 @Controller('fcm-subscribers')
 @UseGuards(JwtAccessTokenGuard)
@@ -22,21 +20,26 @@ export class SubscribersController {
     return await this.subscribersService.findAll();
   }
   
-  @Post('/save')
-  async save(@Body() subscriptionRequestDto: {
-    username: string, tokens: string[], topic: string, subscribed: boolean,
-  }): Promise<boolean> {
-    const { username, tokens, topic, subscribed } = subscriptionRequestDto;
-    return await this.subscribersService.save(username, tokens[0], topic, subscribed);
+  @Get('/topics')
+  async findAllTopics(): Promise<TopicsResponseDto> {
+    return await this.subscribersService.findAllTopics();
   }
   
-  @Get('/:id')
-  async findById(@Param('id') id: number): Promise<SubscriptionResponseDto | null> {
-    return this.subscribersService.findById(id);
-  }
+  // @Post('/save')
+  // async save(@Body() subscriptionRequestDto: {
+  //   username: string, tokens: string[], topic: string, subscribed: boolean,
+  // }): Promise<boolean> {
+  //   const { username, tokens, topic, subscribed } = subscriptionRequestDto;
+  //   return await this.subscribersService.save(username, tokens[0], topic, subscribed);
+  // }
   
-  @Delete('/:id')
-  async deleteById(@Param('id') id: number): Promise<void> {
-    await this.subscribersService.deleteById(id);
-  }
+  // @Get('/:id')
+  // async findById(@Param('id') id: number): Promise<SubscriptionResponseDto | null> {
+  //   return this.subscribersService.findById(id);
+  // }
+  //
+  // @Delete('/:id')
+  // async deleteById(@Param('id') id: number): Promise<void> {
+  //   await this.subscribersService.deleteById(id);
+  // }
 }

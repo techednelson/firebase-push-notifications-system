@@ -1,9 +1,9 @@
 import {
-  IsArray, IsEnum, IsString, MaxLength, MinLength,
+  IsEnum, IsString, MaxLength, MinLength,
 } from 'class-validator';
 import { NotificationType } from '../enums';
 
-export class NotificationRequestDto {
+export class TopicRequestDto {
   
   @IsString()
   @MinLength(4)
@@ -26,7 +26,4 @@ export class NotificationRequestDto {
   
   @IsString()
   username: string;
-  
-  @IsString()
-  token: string;
 }
