@@ -1,5 +1,7 @@
 import {
-  BadRequestException, ConflictException, Injectable,
+  BadRequestException,
+  ConflictException,
+  Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subscriber } from '../../common/entities/subscriber.entity';
@@ -9,19 +11,27 @@ import { TopicsResponseDto } from '../../common/dtos/topics-response.dto';
 
 @Injectable()
 export class SubscribersService {
-  
-  constructor(@InjectRepository(Subscriber) private subscriberRepository: Repository<Subscriber>) {
-  }
-  
+  constructor(
+    @InjectRepository(Subscriber)
+    private subscriberRepository: Repository<Subscriber>,
+  ) {}
+
   async findAll(): Promise<SubscriptionResponseDto[]> {
     const subscriptions = await this.subscriberRepository
-      .createQueryBuilder("subscriber")
-      .where("subscriber.subscribed = :subscribed", { subscribed: true })
+      .createQueryBuilder('subscriber')
+      .where('subscriber.subscribed = :subscribed', { subscribed: true })
       .getMany();
-    return subscriptions.map(subscription => subscription as SubscriptionResponseDto);
+    return subscriptions.map(
+      subscription => subscription as SubscriptionResponseDto,
+    );
   }
-  
-  async save(username: string, token: string, topic: string, subscribed: boolean): Promise<boolean> {
+
+  async save(
+    username: string,
+    token: string,
+    topic: string,
+    subscribed: boolean,
+  ): Promise<boolean> {
     const subscriber = new Subscriber();
     subscriber.username = `${topic}-${username}`;
     subscriber.token = token;
@@ -35,7 +45,7 @@ export class SubscribersService {
       throw new ConflictException(error);
     }
   }
-  
+
   async findAllTopics(): Promise<TopicsResponseDto> {
     try {
       const response = await this.subscriberRepository
@@ -50,8 +60,8 @@ export class SubscribersService {
       throw new ConflictException(error);
     }
   }
-  
-    async update(username: string, subscriber: Subscriber): Promise<boolean> {
+
+  async update(username: string, subscriber: Subscriber): Promise<boolean> {
     try {
       await this.subscriberRepository.save(subscriber);
       return true;
@@ -59,8 +69,10 @@ export class SubscribersService {
       throw new ConflictException(error);
     }
   }
-  
-    async findByUsername(username: string): Promise<SubscriptionResponseDto | null> {
+
+  async findByUsername(
+    username: string,
+  ): Promise<SubscriptionResponseDto | null> {
     if (!username) {
       throw new BadRequestException('Format is incorrect');
     }

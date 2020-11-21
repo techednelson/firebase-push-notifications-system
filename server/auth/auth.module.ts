@@ -10,14 +10,12 @@ import { JwtRefreshTokenStrategy } from './guards/jwt-refresh-token.strategy';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt-access-token'}),
-    JwtModule.register({}), TypeOrmModule.forFeature([User])],
-  controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtAccessTokenStrategy,
-    JwtRefreshTokenStrategy
+    PassportModule.register({ defaultStrategy: 'jwt-access-token' }),
+    JwtModule.register({}),
+    TypeOrmModule.forFeature([User]),
   ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtAccessTokenStrategy, JwtRefreshTokenStrategy],
   exports: [
     AuthService,
     JwtAccessTokenStrategy,

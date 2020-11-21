@@ -1,5 +1,7 @@
 import {
-  BadRequestException, ConflictException, Injectable,
+  BadRequestException,
+  ConflictException,
+  Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Notification } from '../../common/entities/notification.entity';
@@ -9,19 +11,27 @@ import { NotificationStatus, NotificationType } from '../../common/enums';
 
 @Injectable()
 export class NotificationsService {
-  
   constructor(
-    @InjectRepository(Notification) private notificationRepository: Repository<Notification>,
-    private connection: Connection
-  ) {
-  }
-  
+    @InjectRepository(Notification)
+    private notificationRepository: Repository<Notification>,
+    private connection: Connection,
+  ) {}
+
   async findAll(): Promise<NotificationResponseDto[]> {
     const notifications = await this.notificationRepository.find();
-    return notifications.map(notification => notification as NotificationResponseDto);
+    return notifications.map(
+      notification => notification as NotificationResponseDto,
+    );
   }
-  
-  async save(title: string, body: string, topic: string, username: string, type: NotificationType, status: NotificationStatus): Promise<boolean> {
+
+  async save(
+    title: string,
+    body: string,
+    topic: string,
+    username: string,
+    type: NotificationType,
+    status: NotificationStatus,
+  ): Promise<boolean> {
     const notification = new Notification();
     notification.topic = topic;
     notification.createdOn = Date.now().toLocaleString();
@@ -38,7 +48,7 @@ export class NotificationsService {
       throw new ConflictException(error);
     }
   }
-  
+
   async findById(id: number): Promise<NotificationResponseDto | string> {
     if (!id) {
       throw new BadRequestException('Id format is incorrect');
@@ -51,10 +61,10 @@ export class NotificationsService {
     } catch (error) {
       throw new ConflictException(error);
     }
-    
+
     return `Notification with id: ${id} not found`;
   }
-  
+
   async deleteById(ids: number[]): Promise<void> {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();

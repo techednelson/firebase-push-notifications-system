@@ -3,7 +3,7 @@ import { MulticastPayload } from '../common/models/MulticastPayload';
 
 const INITIAL_STATE = {
   subscribers: [],
-  tokens: [] ,
+  tokens: [],
 };
 
 interface MulticastContextProps {

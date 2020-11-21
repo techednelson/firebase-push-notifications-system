@@ -7,7 +7,5 @@ export enum NotificationType {
 export enum NotificationStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED'
+  FAILED = 'FAILED',
 }
-
-

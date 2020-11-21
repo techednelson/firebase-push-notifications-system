@@ -1,5 +1,8 @@
 import {
-  MiddlewareConsumer, Module, NestModule, RequestMethod,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NextMiddleware, NextModule } from '@nestpress/next';
@@ -14,13 +17,13 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './server/common/config/.env'
+      envFilePath: './server/common/config/.env',
     }),
     TypeOrmModule.forRoot(typeOrmPostgresConfig),
     TypeOrmModule.forFeature([User]),
     NextModule,
     AuthModule,
-    FcmAdminServerModule
+    FcmAdminServerModule,
   ],
   controllers: [NextClientController],
   providers: [],
@@ -29,16 +32,19 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     // handle scripts
     consumer.apply(NextMiddleware).forRoutes({
-      path: '_next*', method: RequestMethod.GET,
+      path: '_next*',
+      method: RequestMethod.GET,
     });
-    
+
     // handle other assets
     consumer.apply(NextMiddleware).forRoutes({
-      path: 'images/*', method: RequestMethod.GET,
+      path: 'images/*',
+      method: RequestMethod.GET,
     });
-    
+
     consumer.apply(NextMiddleware).forRoutes({
-      path: 'favicon.ico', method: RequestMethod.GET,
+      path: 'favicon.ico',
+      method: RequestMethod.GET,
     });
   }
 }

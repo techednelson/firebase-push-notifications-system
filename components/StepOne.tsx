@@ -7,16 +7,19 @@ import { TopicContext } from './context/TopicContext';
 import { StepperContext } from './context/StepperContext';
 import { NotificationContext } from './context/NotificationContext';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  root: {
-    width: '100%', '& .MuiTextField-root': {
-      margin: theme.spacing(2),
-      width: '80%',
-      display: 'flex',
-      flexDirection: 'column',
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: '100%',
+      '& .MuiTextField-root': {
+        margin: theme.spacing(2),
+        width: '80%',
+        display: 'flex',
+        flexDirection: 'column',
+      },
     },
-  },
-}));
+  }),
+);
 
 const StepOne = () => {
   const classes = useStyles();
@@ -28,7 +31,7 @@ const StepOne = () => {
   const [body, setBody] = useState<string>(notification.body);
   const [isBodyValid, setIsBodyValid] = useState<boolean>(true);
   const [bodyHelperText, setBodyHelperText] = useState<string>('');
-  
+
   const validateTitle = (valid: boolean) => {
     if (valid) {
       setIsTitleValid(true);
@@ -38,7 +41,7 @@ const StepOne = () => {
       setIsTitleValid(false);
     }
   };
-  
+
   const validateBody = (valid: boolean) => {
     if (valid) {
       setIsBodyValid(true);
@@ -48,7 +51,7 @@ const StepOne = () => {
       setBodyHelperText('Message value is required');
     }
   };
-  
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target;
     if (input.value.length === 0) {
@@ -69,7 +72,7 @@ const StepOne = () => {
       }
     }
   };
-  
+
   const handleSubmit = (): void => {
     if (title === '') {
       validateTitle(false);
@@ -80,17 +83,21 @@ const StepOne = () => {
     if (body !== '' && title !== '') {
       setNotification({ ...notification, title, body });
       setStepper((prevActiveStep: StepperEvent) => ({
-        status: StepperStatus.VALID, activeStep: prevActiveStep.activeStep + 1,
+        status: StepperStatus.VALID,
+        activeStep: prevActiveStep.activeStep + 1,
       }));
     }
   };
-  
+
   useEffect(() => {
-    if (stepper.status === StepperStatus.VALIDATING && stepper.activeStep === 0) {
+    if (
+      stepper.status === StepperStatus.VALIDATING &&
+      stepper.activeStep === 0
+    ) {
       handleSubmit();
     }
   }, [stepper]);
-  
+
   return (
     <form className={classes.root} noValidate autoComplete="off">
       <TextField

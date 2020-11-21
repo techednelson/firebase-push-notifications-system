@@ -7,20 +7,27 @@ let theme = createMuiTheme({
   palette: {
     primary: {
       main: `${blueDark}`,
-    }, secondary: {
+    },
+    secondary: {
       main: `${blueLight}`,
     },
-  }, typography: {
+  },
+  typography: {
     h5: {
-      fontWeight: 500, fontSize: 26, letterSpacing: 0.5,
+      fontWeight: 500,
+      fontSize: 26,
+      letterSpacing: 0.5,
     },
-  }, shape: {
+  },
+  shape: {
     borderRadius: 8,
-  }, props: {
+  },
+  props: {
     MuiTab: {
       disableRipple: true,
     },
-  }, mixins: {
+  },
+  mixins: {
     toolbar: {
       minHeight: 48,
     },
@@ -28,63 +35,80 @@ let theme = createMuiTheme({
 });
 
 theme = {
-  ...theme, overrides: {
+  ...theme,
+  overrides: {
     MuiDrawer: {
       paper: {
         backgroundColor: '#18202c',
       },
-    }, MuiButton: {
+    },
+    MuiButton: {
       label: {
         textTransform: 'none',
-      }, contained: {
-        boxShadow: 'none', '&:active': {
+      },
+      contained: {
+        boxShadow: 'none',
+        '&:active': {
           boxShadow: 'none',
         },
       },
-    }, MuiTabs: {
+    },
+    MuiTabs: {
       root: {
         marginLeft: theme.spacing(1),
-      }, indicator: {
+      },
+      indicator: {
         height: 3,
         borderTopLeftRadius: 3,
         borderTopRightRadius: 3,
         backgroundColor: theme.palette.common.white,
       },
-    }, MuiTab: {
+    },
+    MuiTab: {
       root: {
         textTransform: 'none',
         margin: '0 16px',
         minWidth: 0,
         padding: 0,
         [theme.breakpoints.up('md')]: {
-          padding: 0, minWidth: 0,
+          padding: 0,
+          minWidth: 0,
         },
       },
-    }, MuiIconButton: {
+    },
+    MuiIconButton: {
       root: {
         padding: theme.spacing(1),
       },
-    }, MuiTooltip: {
+    },
+    MuiTooltip: {
       tooltip: {
         borderRadius: 4,
       },
-    }, MuiDivider: {
+    },
+    MuiDivider: {
       root: {
         backgroundColor: '#404854',
       },
-    }, MuiListItemText: {
+    },
+    MuiListItemText: {
       primary: {
         fontWeight: theme.typography.fontWeightMedium,
       },
-    }, MuiListItemIcon: {
+    },
+    MuiListItemIcon: {
       root: {
-        color: 'inherit', marginRight: 0, '& svg': {
+        color: 'inherit',
+        marginRight: 0,
+        '& svg': {
           fontSize: 20,
         },
       },
-    }, MuiAvatar: {
+    },
+    MuiAvatar: {
       root: {
-        width: 32, height: 32,
+        width: 32,
+        height: 32,
       },
     },
   },

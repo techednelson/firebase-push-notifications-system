@@ -5,7 +5,7 @@ import {
   lighten,
   makeStyles,
   Theme,
-  withStyles
+  withStyles,
 } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -42,8 +42,16 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(order: Order, orderBy: Key): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-  return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+function getComparator<Key extends keyof any>(
+  order: Order,
+  orderBy: Key,
+): (
+  a: { [key in Key]: number | string },
+  b: { [key in Key]: number | string },
+) => number {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
 function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
@@ -53,38 +61,53 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-  return stabilizedThis.map((el) => el[0]);
+  return stabilizedThis.map(el => el[0]);
 }
 
 interface EnhancedTableHeadProps {
   classes: ReturnType<typeof useStyles>;
   numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Notification | keyof Subscriber) => void;
+  onRequestSort: (
+    event: React.MouseEvent<unknown>,
+    property: keyof Notification | keyof Subscriber,
+  ) => void;
   domain: string;
   order: Order;
   orderBy: string;
   rowCount: number;
-  headCells: HeadCell[]
+  headCells: HeadCell[];
 }
 
 const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
-  const { classes, order, orderBy, numSelected, rowCount, onRequestSort, domain } = props;
-  const createSortHandler = (property: keyof Notification | keyof Subscriber) => (event: React.MouseEvent<unknown>) => {
+  const {
+    classes,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onRequestSort,
+    domain,
+  } = props;
+  const createSortHandler = (
+    property: keyof Notification | keyof Subscriber,
+  ) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
-  
-  return (<TableHead>
+
+  return (
+    <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
           {domain === 'notifications' ? (
             <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            inputProps={{ 'aria-label': 'select all notifications' }}
-          />
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              inputProps={{ 'aria-label': 'select all notifications' }}
+            />
           ) : null}
         </TableCell>
-        {props.headCells.map((headCell) => (<TableCell
+        {props.headCells.map(headCell => (
+          <TableCell
             key={headCell.id}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -97,33 +120,41 @@ const EnhancedTableHead = (props: EnhancedTableHeadProps) => {
               {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>) : null}
+                </span>
+              ) : null}
             </TableSortLabel>
-          </TableCell>))}
+          </TableCell>
+        ))}
       </TableRow>
-    </TableHead>);
+    </TableHead>
+  );
 };
 
-const useToolbarStyles = makeStyles((theme: Theme) => createStyles({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight: theme.palette.type === 'light' ? {
-    color: theme.palette.secondary.main,
-    backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-  } : {
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.secondary.dark,
-  },
-  title: {
-    flex: '1 1 100%',
-  },
-  limitExceed: {
-    color: 'red',
-    flex: '1 1 100%',
-  }
-}));
+const useToolbarStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
+    },
+    limitExceed: {
+      color: 'red',
+      flex: '1 1 100%',
+    },
+  }),
+);
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
@@ -135,7 +166,7 @@ interface EnhancedTableToolbarProps {
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
   const { numSelected, selected, domain, router } = props;
-  
+
   const deleteSelected = async () => {
     if (selected.length > 25) {
       return;
@@ -147,7 +178,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       console.log('There was issue deleting the selected elements', error);
     }
   };
-  
+
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -163,15 +194,14 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         >
           {numSelected} selected
         </Typography>
-      ) : numSelected > 2 && domain === 'notifications'
-        ? (
+      ) : numSelected > 2 && domain === 'notifications' ? (
         <Typography
           className={classes.limitExceed}
           variant="subtitle1"
           id="selected-limit-exceed"
           component="div"
         >
-         {`You can select 25 notifications maximum each time`}
+          {`You can select 25 notifications maximum each time`}
         </Typography>
       ) : (
         <Typography
@@ -192,38 +222,41 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           ) : null}
         </React.Fragment>
       ) : null}
-    </Toolbar>);
+    </Toolbar>
+  );
 };
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  root: {
-    width: '100%',
-  },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-  table: {
-    minWidth: 750,
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-  truncate: {
-    maxWidth: 56.8,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  }
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: '100%',
+    },
+    paper: {
+      width: '100%',
+      marginBottom: theme.spacing(2),
+    },
+    table: {
+      minWidth: 750,
+    },
+    visuallyHidden: {
+      border: 0,
+      clip: 'rect(0 0 0 0)',
+      height: 1,
+      margin: -1,
+      overflow: 'hidden',
+      padding: 0,
+      position: 'absolute',
+      top: 20,
+      width: 1,
+    },
+    truncate: {
+      maxWidth: 56.8,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+  }),
+);
 
 interface EnhancedTableProps {
   rows: any;
@@ -269,24 +302,30 @@ const AntSwitch = withStyles((theme: Theme) =>
 const EnhancedTable = (props: EnhancedTableProps) => {
   const classes = useStyles();
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Notification | keyof Subscriber>('id');
+  const [orderBy, setOrderBy] = useState<keyof Notification | keyof Subscriber>(
+    'id',
+  );
   const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const router = useRouter();
   const [domain] = useState(
-    router.pathname === '/list-notifications'
-      ? 'notifications'
-      : 'subscribers'
+    router.pathname === '/list-notifications' ? 'notifications' : 'subscribers',
   );
-  
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Notification | keyof Subscriber) => {
+
+  const handleRequestSort = (
+    event: React.MouseEvent<unknown>,
+    property: keyof Notification | keyof Subscriber,
+  ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-  
-  const handleNotificationsClick = (event: React.MouseEvent<unknown>, id: number) => {
+
+  const handleNotificationsClick = (
+    event: React.MouseEvent<unknown>,
+    id: number,
+  ) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: number[] = [];
     if (selectedIndex === -1) {
@@ -298,69 +337,91 @@ const EnhancedTable = (props: EnhancedTableProps) => {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
+        selected.slice(selectedIndex + 1),
       );
     }
     setSelected(newSelected);
   };
-  
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
-  
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  
+
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
-  
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
-  
-  const toggleSubscription = async (event: React.ChangeEvent<unknown>, username: string, token: string, topic: string, subscribed: boolean) => {
+
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
+
+  const toggleSubscription = async (
+    event: React.ChangeEvent<unknown>,
+    username: string,
+    token: string,
+    topic: string,
+    subscribed: boolean,
+  ) => {
     event.preventDefault();
     const subscriber = new Subscriber();
     subscriber.username = username;
     subscriber.token = token;
     subscriber.topic = topic;
     subscriber.subscribed = !subscribed;
-    await axiosApiInstance.post(`fcm/admin-toggle-subscription`, subscriber)
-      .then((resp) => {
+    await axiosApiInstance
+      .post(`fcm/admin-toggle-subscription`, subscriber)
+      .then(resp => {
         if (resp.status === 200) {
           router.reload();
         }
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   };
-  
+
   const createRow = (row: any) => {
     return Object.keys(row).map((key, index) => {
       if (key === 'subscribed') {
-        return <TableCell key={index}>
-          <Typography component="div">
-            <Grid component="label" container alignItems="center" spacing={1}>
-              <Grid item>Off</Grid>
-              <Grid item>
-                <AntSwitch
-                  checked={row[key]}
-                  onChange={(e) => toggleSubscription(
-                    e, row.username, row.token, row.topic, row.subscribed
-                  )}
-                  name="switch"
-                />
+        return (
+          <TableCell key={index}>
+            <Typography component="div">
+              <Grid component="label" container alignItems="center" spacing={1}>
+                <Grid item>Off</Grid>
+                <Grid item>
+                  <AntSwitch
+                    checked={row[key]}
+                    onChange={e =>
+                      toggleSubscription(
+                        e,
+                        row.username,
+                        row.token,
+                        row.topic,
+                        row.subscribed,
+                      )
+                    }
+                    name="switch"
+                  />
+                </Grid>
+                <Grid item>On</Grid>
               </Grid>
-              <Grid item>On</Grid>
-            </Grid>
-          </Typography>
-        </TableCell>;
+            </Typography>
+          </TableCell>
+        );
       }
       if (key === 'token') {
-        return <TableCell className={classes.truncate} key={index}>{row[key]}</TableCell>;
+        return (
+          <TableCell className={classes.truncate} key={index}>
+            {row[key]}
+          </TableCell>
+        );
       }
       return <TableCell key={index}>{row[key]}</TableCell>;
     });
   };
-  
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -395,7 +456,9 @@ const EnhancedTable = (props: EnhancedTableProps) => {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleNotificationsClick(event, Number(row.id))}
+                      onClick={event =>
+                        handleNotificationsClick(event, Number(row.id))
+                      }
                       role="button"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -407,15 +470,18 @@ const EnhancedTable = (props: EnhancedTableProps) => {
                           <Checkbox
                             checked={isItemSelected}
                             inputProps={{ 'aria-labelledby': labelId }}
-                        />
+                          />
                         ) : null}
                       </TableCell>
                       {createRow(row)}
-                    </TableRow>);
+                    </TableRow>
+                  );
                 })}
-              {emptyRows > 0 && (<TableRow style={{ height: 53 * emptyRows }}>
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
-                </TableRow>)}
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -429,7 +495,8 @@ const EnhancedTable = (props: EnhancedTableProps) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-    </div>);
+    </div>
+  );
 };
 
 export default EnhancedTable;

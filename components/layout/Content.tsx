@@ -8,7 +8,10 @@ import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import {
-  createStyles, Theme, withStyles, WithStyles,
+  createStyles,
+  Theme,
+  withStyles,
+  WithStyles,
 } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -16,26 +19,29 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { SearchWordContext } from '../context/SearchWordContext';
 
-const styles = (theme: Theme) => createStyles({
-  paper: {
-    maxWidth: 936, margin: 'auto', overflow: 'hidden',
-  },
-  searchBar: {
-    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-  },
-  searchInput: {
-    fontSize: theme.typography.fontSize,
-  },
-  block: {
-    display: 'block',
-  },
-  addNotification: {
-    marginRight: theme.spacing(1),
-  },
-  contentWrapper: {
-    margin: '40px 16px',
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    paper: {
+      maxWidth: 936,
+      margin: 'auto',
+      overflow: 'hidden',
+    },
+    searchBar: {
+      borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+    },
+    searchInput: {
+      fontSize: theme.typography.fontSize,
+    },
+    block: {
+      display: 'block',
+    },
+    addNotification: {
+      marginRight: theme.spacing(1),
+    },
+    contentWrapper: {
+      margin: '40px 16px',
+    },
+  });
 
 export interface ContentProps extends WithStyles<typeof styles> {
   children: any;
@@ -44,7 +50,7 @@ export interface ContentProps extends WithStyles<typeof styles> {
 const Content = (props: ContentProps) => {
   const { classes } = props;
   const { setSearchWord } = useContext(SearchWordContext);
-  
+
   return (
     <Paper className={classes.paper}>
       <AppBar
@@ -60,11 +66,12 @@ const Content = (props: ContentProps) => {
             </Grid>
             <Grid item xs>
               <TextField
-                onChange={(e) => setSearchWord(e.target.value)}
+                onChange={e => setSearchWord(e.target.value)}
                 fullWidth
                 placeholder="Search by username, topic, title or message"
                 InputProps={{
-                  disableUnderline: true, className: classes.searchInput,
+                  disableUnderline: true,
+                  className: classes.searchInput,
                 }}
               />
             </Grid>
@@ -87,9 +94,7 @@ const Content = (props: ContentProps) => {
           </Grid>
         </Toolbar>
       </AppBar>
-      <div className={classes.contentWrapper}>
-        {props.children}
-      </div>
+      <div className={classes.contentWrapper}>{props.children}</div>
     </Paper>
   );
 };

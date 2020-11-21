@@ -5,7 +5,9 @@ interface UsernamesCheckedContextProps {
   setUsernamesChecked: Function;
 }
 
-export const UsernamesCheckedContext = createContext<UsernamesCheckedContextProps>({
+export const UsernamesCheckedContext = createContext<
+  UsernamesCheckedContextProps
+>({
   usernamesChecked: [],
   setUsernamesChecked: () => {},
 });
@@ -13,7 +15,9 @@ export const UsernamesCheckedContext = createContext<UsernamesCheckedContextProp
 export const UsernamesCheckedContextProvider = (props: any) => {
   const [usernamesChecked, setUsernamesChecked] = useState<number[]>([]);
   return (
-    <UsernamesCheckedContext.Provider value={{ usernamesChecked, setUsernamesChecked }}>
+    <UsernamesCheckedContext.Provider
+      value={{ usernamesChecked, setUsernamesChecked }}
+    >
       {props.children}
     </UsernamesCheckedContext.Provider>
   );

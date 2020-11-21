@@ -34,21 +34,24 @@ export const axiosApiInstance = axios.create();
 // });
 
 // Response interceptor for API calls
-axiosApiInstance.interceptors.response.use((response) => {
-  return response
-}, async function (error) {
-  const originalRequest = error.config;
-  if (error.response.status === 401 && !originalRequest._retry) {
-    originalRequest._retry = true;
-    await axios.post(`auth/refresh`);
-    return axiosApiInstance(originalRequest);
-  }
-  return Promise.reject(error);
-});
+axiosApiInstance.interceptors.response.use(
+  response => {
+    return response;
+  },
+  async function(error) {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      await axios.post(`auth/refresh`);
+      return axiosApiInstance(originalRequest);
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
-  
+
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -56,36 +59,38 @@ export default function MyApp(props: AppProps) {
       jssStyles.parentElement!.removeChild(jssStyles);
     }
   }, []);
-  
-  return (<React.Fragment>
+
+  return (
+    <React.Fragment>
       <Head>
         <title>FCM Admin</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>
         <SearchWordContextProvider>
-           <NotificationContextProvider>
-             <TopicContextProvider>
-               <StepperContextProvider>
-                 <MulticastContextProvider>
-                   <SingleContextProvider>
-                     <UsernameContextProvider>
-                       <UsernamesCheckedContextProvider>
-                         <UsernamesSelectedContextProvider>
-                           <TargetContextProvider>
-                             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-                             <CssBaseline />
-                             <Component {...pageProps} />
-                           </TargetContextProvider>
-                         </UsernamesSelectedContextProvider>
-                       </UsernamesCheckedContextProvider>
-                     </UsernameContextProvider>
-                   </SingleContextProvider>
-                 </MulticastContextProvider>
-               </StepperContextProvider>
-             </TopicContextProvider>
-           </NotificationContextProvider>
+          <NotificationContextProvider>
+            <TopicContextProvider>
+              <StepperContextProvider>
+                <MulticastContextProvider>
+                  <SingleContextProvider>
+                    <UsernameContextProvider>
+                      <UsernamesCheckedContextProvider>
+                        <UsernamesSelectedContextProvider>
+                          <TargetContextProvider>
+                            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                            <CssBaseline />
+                            <Component {...pageProps} />
+                          </TargetContextProvider>
+                        </UsernamesSelectedContextProvider>
+                      </UsernamesCheckedContextProvider>
+                    </UsernameContextProvider>
+                  </SingleContextProvider>
+                </MulticastContextProvider>
+              </StepperContextProvider>
+            </TopicContextProvider>
+          </NotificationContextProvider>
         </SearchWordContextProvider>
       </ThemeProvider>
-    </React.Fragment>);
+    </React.Fragment>
+  );
 }

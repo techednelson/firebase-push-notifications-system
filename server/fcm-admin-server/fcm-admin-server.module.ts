@@ -11,12 +11,8 @@ import { Subscriber } from '../common/entities/subscriber.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Notification, Subscriber]),
-     AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Notification, Subscriber]), AuthModule],
   controllers: [NotificationsController, FcmController, SubscribersController],
   providers: [SubscribersService, FcmService, NotificationsService],
 })
-export class FcmAdminServerModule {
-}
+export class FcmAdminServerModule {}

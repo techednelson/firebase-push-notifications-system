@@ -8,17 +8,23 @@ import { Repository } from 'typeorm';
 import { Request } from 'express';
 
 @Injectable()
-export class JwtAccessTokenStrategy extends PassportStrategy(Strategy, 'jwt-access-token') {
-  constructor(@InjectRepository(User) private userRepository: Repository<User>) {
+export class JwtAccessTokenStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-access-token',
+) {
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) =>
-        request && request.cookies && request.cookies['FCM-ACCESS-TOKEN']
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) =>
+          request && request.cookies && request.cookies['FCM-ACCESS-TOKEN'],
       ]),
       ignoreExpiration: false,
       secretOrKey: `${process.env.JWT_SECRET_OR_KEY}`,
     });
   }
-  
+
   async validate(payload: JwtPayload): Promise<User> {
     const { username } = payload;
     const user = await this.userRepository.findOne({ username });

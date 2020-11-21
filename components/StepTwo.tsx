@@ -27,22 +27,25 @@ import { UsernamesCheckedContext } from './context/UsernamesCheckedContext';
 import { UsernamesSelectedContext } from './context/UsernamesSelectedContext';
 import { TargetContext } from './context/TargetContext';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  root: {
-    height: 170,
-    maxWidth: '80%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  formControl: {
-    margin: theme.spacing(1), width: '80%',
-  },
-  bottomNavigation: {
-    marginBottom: '10px',
-  },
-  error: {
-    color: '#f44336',
-  }
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      height: 170,
+      maxWidth: '80%',
+      backgroundColor: theme.palette.background.paper,
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      width: '80%',
+    },
+    bottomNavigation: {
+      marginBottom: '10px',
+    },
+    error: {
+      color: '#f44336',
+    },
+  }),
+);
 
 const StepTwo = () => {
   const classes = useStyles();
@@ -51,118 +54,141 @@ const StepTwo = () => {
   const { topicPayload, setTopicPayload } = useContext(TopicContext);
   const { singlePayload, setSinglePayload } = useContext(SingleContext);
   const { multicast, setMulticast } = useContext(MulticastContext);
-  const { usernamesChecked, setUsernamesChecked } = useContext(UsernamesCheckedContext);
-  const { usernamesSelected, setUsernamesSelected } =  useContext(UsernamesSelectedContext);
+  const { usernamesChecked, setUsernamesChecked } = useContext(
+    UsernamesCheckedContext,
+  );
+  const { usernamesSelected, setUsernamesSelected } = useContext(
+    UsernamesSelectedContext,
+  );
   const { target, setTarget } = useContext(TargetContext);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [tokens, setTokens] = useState<string[]>([]);
   const [topics, setTopics] = useState<string[]>([]);
   const [isTopicValid, setIsTopicValid] = useState<boolean>(true);
   const [isSingleValid, setIsSingleValid] = useState<boolean>(true);
-  
+
   useEffect(() => {
     fetchTopics();
     fetchSubscribers();
   }, []);
-  
+
   const handleSubmit = () => {
     let type: NotificationType;
-     const { title, body } = notification;
-     
-     if (target === NotificationType.TOPIC && topicPayload.topic === '') {
-       setIsTopicValid(false);
-       return;
-     }
-     
-     if (target === NotificationType.SINGLE && usernamesChecked.length === 0) {
-       setIsSingleValid(false);
-       return;
-     }
-     
+    const { title, body } = notification;
+
+    if (target === NotificationType.TOPIC && topicPayload.topic === '') {
+      setIsTopicValid(false);
+      return;
+    }
+
+    if (target === NotificationType.SINGLE && usernamesChecked.length === 0) {
+      setIsSingleValid(false);
+      return;
+    }
+
     if (target === NotificationType.TOPIC) {
       type = target;
       setTopicPayload({
-        ...topicPayload, title, body, type, username: 'All usernames'
+        ...topicPayload,
+        title,
+        body,
+        type,
+        username: 'All usernames',
       });
     } else {
       if (usernamesSelected.length === 1) {
         type = NotificationType.SINGLE;
         const { topic, username, token } = usernamesSelected[0];
         setSinglePayload({
-          ...singlePayload, title, body, type, topic, username, token
+          ...singlePayload,
+          title,
+          body,
+          type,
+          topic,
+          username,
+          token,
         });
       } else {
         type = NotificationType.MULTICAST;
         setMulticast({
-          ...multicast, subscribers: usernamesSelected, tokens
+          ...multicast,
+          subscribers: usernamesSelected,
+          tokens,
         });
       }
     }
     setStepper((prevActiveStep: StepperEvent) => ({
       status: StepperStatus.VALID,
       activeStep: prevActiveStep.activeStep + 1,
-      type
+      type,
     }));
   };
-  
+
   useEffect(() => {
-    if (stepper.status === StepperStatus.VALIDATING && stepper.activeStep === 1) {
+    if (
+      stepper.status === StepperStatus.VALIDATING &&
+      stepper.activeStep === 1
+    ) {
       handleSubmit();
     }
   }, [stepper]);
-  
+
   const fetchSubscribers = () => {
-    axiosApiInstance.get('fcm-subscribers')
+    axiosApiInstance
+      .get('fcm-subscribers')
       .then(({ data }) => {
         if (data) {
           setSubscribers(data);
         }
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   };
-  
+
   const fetchTopics = () => {
-    axiosApiInstance.get('fcm-subscribers/topics')
+    axiosApiInstance
+      .get('fcm-subscribers/topics')
       .then(({ data }) => {
         if (data) {
           setTopics(data.topics);
         }
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   };
-  
+
   const handleToggle = (value: number, item: Subscriber) => () => {
     const currentIndexNewChecked = usernamesChecked.indexOf(value);
     const newChecked = [...usernamesChecked];
-    
+
     let newSelected: SinglePayload[];
-    
+
     const currentIndexToken = tokens.indexOf(item.token);
     const newTokens = [...tokens];
-    
+
     if (currentIndexNewChecked === -1) {
       newChecked.push(value);
       newTokens.push(item.token);
-      
+
       const newPayload = new SinglePayload();
       newPayload.title = notification.title;
       newPayload.body = notification.body;
       newPayload.topic = item.topic;
       newPayload.username = item.username;
       newPayload.token = item.token;
-      
+
       newSelected = [...usernamesSelected];
       newSelected.push(newPayload);
     } else {
       newChecked.splice(currentIndexNewChecked, 1);
       newTokens.splice(currentIndexToken, 1);
-      newSelected = usernamesSelected.filter(selected => selected.username !== item.username);
+      newSelected = usernamesSelected.filter(
+        selected => selected.username !== item.username,
+      );
     }
     setUsernamesChecked(newChecked);
     setUsernamesSelected(newSelected);
     setTokens(newTokens);
   };
-  
+
   const renderHeaderRow = (props: ListChildComponentProps) => {
     const { index, style } = props;
     return (
@@ -174,7 +200,7 @@ const StepTwo = () => {
       </ListItem>
     );
   };
-  
+
   const renderRow = (props: ListChildComponentProps) => {
     const { index, style, data } = props;
     const labelId = `checkbox-list-label-${index}`;
@@ -199,21 +225,27 @@ const StepTwo = () => {
         </ListItemIcon>
         <ListItemText id={`username-${index}`} primary={`${item.username}`} />
         <ListItemText id={`topic-y${index}`} primary={`${item.topic}`} />
-        <ListItemText id={`subscribed-${index}`} primary={`${item.subscribed}`} />
+        <ListItemText
+          id={`subscribed-${index}`}
+          primary={`${item.subscribed}`}
+        />
       </ListItem>
     );
   };
-  
-  const handleNavigationChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+
+  const handleNavigationChange = (
+    event: React.ChangeEvent<{}>,
+    newValue: string,
+  ) => {
     setTarget(newValue);
   };
-  
+
   const handleTopicChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const topic = event.target.value as string;
     setTopicPayload({ ...topicPayload, topic });
     setIsTopicValid(true);
   };
-  
+
   return (
     <React.Fragment>
       <BottomNavigation
@@ -242,13 +274,17 @@ const StepTwo = () => {
               height={170}
               width={500}
               itemSize={25}
-             itemCount={subscribers.length}
-             itemData={subscribers}
+              itemCount={subscribers.length}
+              itemData={subscribers}
             >
               {renderRow}
             </FixedSizeList>
           </div>
-          {!isSingleValid? <FormHelperText className={classes.error}>Selecting at least one username is required</FormHelperText> : null}
+          {!isSingleValid ? (
+            <FormHelperText className={classes.error}>
+              Selecting at least one username is required
+            </FormHelperText>
+          ) : null}
         </React.Fragment>
       ) : (
         <FormControl
@@ -267,12 +303,16 @@ const StepTwo = () => {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            {topics.length > 0 && topics.map((topic, index) => (
-              <MenuItem key={index} value={topic}>
-                {topic ? topic[0].toUpperCase() + topic.slice(1) : ''}
-              </MenuItem>))}
+            {topics.length > 0 &&
+              topics.map((topic, index) => (
+                <MenuItem key={index} value={topic}>
+                  {topic ? topic[0].toUpperCase() + topic.slice(1) : ''}
+                </MenuItem>
+              ))}
           </Select>
-          {!isTopicValid ? <FormHelperText>Selecting a topic is required</FormHelperText> : null}
+          {!isTopicValid ? (
+            <FormHelperText>Selecting a topic is required</FormHelperText>
+          ) : null}
         </FormControl>
       )}
     </React.Fragment>

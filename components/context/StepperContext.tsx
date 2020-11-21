@@ -13,7 +13,8 @@ interface StepperContextProps {
 }
 
 export const StepperContext = createContext<StepperContextProps>({
-  stepper: INITIAL_STATE, setStepper: () => {},
+  stepper: INITIAL_STATE,
+  setStepper: () => {},
 });
 
 export const StepperContextProvider = (props: any) => {

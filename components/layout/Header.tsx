@@ -10,7 +10,10 @@ import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {
-  createStyles, Theme, withStyles, WithStyles,
+  createStyles,
+  Theme,
+  withStyles,
+  WithStyles,
 } from '@material-ui/core/styles';
 import { axiosApiInstance } from '../../pages/_app';
 import { UsernameContext } from '../context/UsernameContext';
@@ -18,27 +21,28 @@ import { useRouter } from 'next/router';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
-const styles = (theme: Theme) => createStyles({
-  secondaryBar: {
-    zIndex: 0,
-  },
-  menuButton: {
-    marginLeft: -theme.spacing(1),
-  },
-  iconButtonAvatar: {
-    padding: 4,
-  },
-  link: {
-    textDecoration: 'none',
-    color: lightColor,
-    '&:hover': {
-      color: theme.palette.common.white,
+const styles = (theme: Theme) =>
+  createStyles({
+    secondaryBar: {
+      zIndex: 0,
     },
-  },
-  button: {
-    borderColor: lightColor,
-  },
-});
+    menuButton: {
+      marginLeft: -theme.spacing(1),
+    },
+    iconButtonAvatar: {
+      padding: 4,
+    },
+    link: {
+      textDecoration: 'none',
+      color: lightColor,
+      '&:hover': {
+        color: theme.palette.common.white,
+      },
+    },
+    button: {
+      borderColor: lightColor,
+    },
+  });
 
 interface HeaderProps extends WithStyles<typeof styles> {
   onDrawerToggle: () => void;
@@ -48,14 +52,15 @@ const Header = (props: HeaderProps) => {
   const { classes, onDrawerToggle } = props;
   const { username } = useContext(UsernameContext);
   const router = useRouter();
-  
+
   const logout = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    axiosApiInstance.post('auth/log-out', { username })
-      .then((resp) => router.push('/'))
+    axiosApiInstance
+      .post('auth/log-out', { username })
+      .then(resp => router.push('/'))
       .catch(error => console.log(error));
-  }
-  
+  };
+
   return (
     <React.Fragment>
       <AppBar color="secondary" position="sticky" elevation={0}>
@@ -75,7 +80,11 @@ const Header = (props: HeaderProps) => {
             </Hidden>
             <Grid item xs />
             <Grid item>
-              <IconButton onClick={(e) => logout(e)} color="inherit" className={classes.iconButtonAvatar}>
+              <IconButton
+                onClick={e => logout(e)}
+                color="inherit"
+                className={classes.iconButtonAvatar}
+              >
                 <Avatar src="" alt="My Avatar" />
               </IconButton>
             </Grid>

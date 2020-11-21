@@ -15,29 +15,30 @@ import { NotificationContext } from './context/NotificationContext';
 import { axiosApiInstance } from '../pages/_app';
 import { router } from 'next/client';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-   root: {
-    maxWidth: '80%',
-    backgroundColor: theme.palette.background.paper,
-    margin: '30px 0'
-  },
-  title: {
-    marginBottom: '20px'
-  },
-  subtitle: {
-    marginBottom: '10px'
-  },
-  pos: {
-    marginBottom: 12,
-    fontSize: '14px',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  icon: {
-     marginRight: '14px'
-  }
-  
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      maxWidth: '80%',
+      backgroundColor: theme.palette.background.paper,
+      margin: '30px 0',
+    },
+    title: {
+      marginBottom: '20px',
+    },
+    subtitle: {
+      marginBottom: '10px',
+    },
+    pos: {
+      marginBottom: 12,
+      fontSize: '14px',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    icon: {
+      marginRight: '14px',
+    },
+  }),
+);
 
 const StepThree = () => {
   const classes = useStyles();
@@ -46,7 +47,7 @@ const StepThree = () => {
   const { topicPayload } = useContext(TopicContext);
   const { singlePayload } = useContext(SingleContext);
   const { multicast } = useContext(MulticastContext);
-  
+
   const handleSubmit = (type: NotificationType) => {
     let url;
     let body;
@@ -64,14 +65,15 @@ const StepThree = () => {
         body = topicPayload;
         break;
     }
-    axiosApiInstance.post(url, body)
+    axiosApiInstance
+      .post(url, body)
       .then(response => {
         console.log(response);
         router.push('list-notifications').then();
       })
       .catch(error => console.log(error));
   };
-  
+
   useEffect(() => {
     if (
       stepper.status === StepperStatus.VALIDATING &&
@@ -81,32 +83,49 @@ const StepThree = () => {
       handleSubmit(stepper.type);
     }
   }, [stepper]);
-  
+
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Typography className={classes.title} align="center" variant="h6" component="h2">
+        <Typography
+          className={classes.title}
+          align="center"
+          variant="h6"
+          component="h2"
+        >
           Review message
         </Typography>
-        
-         <Typography className={classes.subtitle} variant="subtitle1" component="h2">
-           Notification content
+
+        <Typography
+          className={classes.subtitle}
+          variant="subtitle1"
+          component="h2"
+        >
+          Notification content
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          <AssignmentIcon className={classes.icon}  /> {notification.body}
+          <AssignmentIcon className={classes.icon} /> {notification.body}
         </Typography>
-        <hr/>
-        
-        <Typography className={classes.subtitle} variant="subtitle1" component="h2">
-           Target
+        <hr />
+
+        <Typography
+          className={classes.subtitle}
+          variant="subtitle1"
+          component="h2"
+        >
+          Target
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          <TrackChangesIcon className={classes.icon}  /> {topicPayload.type}
+          <TrackChangesIcon className={classes.icon} /> {topicPayload.type}
         </Typography>
-        <hr/>
-        
-        <Typography className={classes.subtitle} variant="subtitle1" component="h2">
-           Scheduling
+        <hr />
+
+        <Typography
+          className={classes.subtitle}
+          variant="subtitle1"
+          component="h2"
+        >
+          Scheduling
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
           <ScheduleIcon className={classes.icon} /> Send now

@@ -12,7 +12,9 @@ export const TargetContext = createContext<TargetContextProps>({
 });
 
 export const TargetContextProvider = (props: any) => {
-  const [target, setTarget] = useState<NotificationType>(NotificationType.TOPIC);
+  const [target, setTarget] = useState<NotificationType>(
+    NotificationType.TOPIC,
+  );
   return (
     <TargetContext.Provider value={{ target, setTarget }}>
       {props.children}

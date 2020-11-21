@@ -6,15 +6,21 @@ interface UsernamesSelectedContextProps {
   setUsernamesSelected: Function;
 }
 
-export const UsernamesSelectedContext = createContext<UsernamesSelectedContextProps>({
+export const UsernamesSelectedContext = createContext<
+  UsernamesSelectedContextProps
+>({
   usernamesSelected: [],
   setUsernamesSelected: () => {},
 });
 
 export const UsernamesSelectedContextProvider = (props: any) => {
-  const [usernamesSelected, setUsernamesSelected] = useState<SinglePayload[]>([]);
+  const [usernamesSelected, setUsernamesSelected] = useState<SinglePayload[]>(
+    [],
+  );
   return (
-    <UsernamesSelectedContext.Provider value={{ usernamesSelected, setUsernamesSelected }}>
+    <UsernamesSelectedContext.Provider
+      value={{ usernamesSelected, setUsernamesSelected }}
+    >
       {props.children}
     </UsernamesSelectedContext.Provider>
   );

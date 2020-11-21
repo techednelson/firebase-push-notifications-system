@@ -7,7 +7,7 @@ export enum NotificationType {
 export enum NotificationStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED'
+  FAILED = 'FAILED',
 }
 
 export enum StepperStatus {
@@ -22,4 +22,3 @@ export enum LocalStorage {
   FCM_REFRESH_TOKEN = 'FCM_REFRESH_TOKEN',
   FCM_USERNAME = 'FCM_USERNAME',
 }
-

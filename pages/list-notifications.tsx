@@ -10,36 +10,44 @@ import { axiosApiInstance } from './_app';
 
 const headCells: HeadCell[] = [
   { id: 'id', label: 'ID' },
-  { id: 'title', label: 'Title', },
+  { id: 'title', label: 'Title' },
   { id: 'body', label: 'Message' },
-  { id: 'type', label: 'Type', },
+  { id: 'type', label: 'Type' },
   { id: 'topic', label: 'Topic' },
   { id: 'username', label: 'Username' },
   { id: 'createdOn', label: 'Created On' },
-  { id: 'status', label: 'Status'}
+  { id: 'status', label: 'Status' },
 ];
 
 const ListNotifications = () => {
   const { searchWord } = useContext(SearchWordContext);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [notificationsBackup, setNotificationsBackup] = useState<Notification[]>([]);
-  
+  const [notificationsBackup, setNotificationsBackup] = useState<
+    Notification[]
+  >([]);
+
   useEffect(() => {
-    axiosApiInstance.get('fcm-notifications')
+    axiosApiInstance
+      .get('fcm-notifications')
       .then(({ data }) => {
         if (data) {
           setNotifications(data);
           setNotificationsBackup(data);
         }
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   }, []);
-  
+
   useEffect(() => {
     let filtered: Notification[] = [];
     if (searchWord.length >= 3) {
       filtered = notifications.filter(notification => {
-        if (notification.username.includes(searchWord) || notification.title.includes(searchWord) || notification.topic.includes(searchWord) || notification.body.includes(searchWord)) {
+        if (
+          notification.username.includes(searchWord) ||
+          notification.title.includes(searchWord) ||
+          notification.topic.includes(searchWord) ||
+          notification.body.includes(searchWord)
+        ) {
           return notification;
         }
       });
@@ -48,15 +56,17 @@ const ListNotifications = () => {
     }
     setNotifications(filtered);
   }, [searchWord]);
-  
+
   return (
     <Dashboard>
       <Content>
         {notifications.length === 0 ? (
           <Typography color="textSecondary" align="center">
             No notifications for this project yet
-          </Typography>) : (
-          <EnhancedTable rows={notifications} headCells={headCells} />)}
+          </Typography>
+        ) : (
+          <EnhancedTable rows={notifications} headCells={headCells} />
+        )}
       </Content>
     </Dashboard>
   );

@@ -9,7 +9,8 @@
     "dev": "ts-node --project tsconfig.build.json server/main.ts",
     "build": "next build && tsc --project tsconfig.build.json",
     "start": "cross-env NODE_ENV=production node .next/production-server/main.js",
-    "format": "prettier --write \"server/**/*.ts\" \"pages/**/*.tsx\" \"components/**/*.tsx\""
+    "format": "prettier --write \"server/**/*.ts\" \"pages/**/*.tsx\" \"components/**/*.tsx\"",
+    "docs": "npx @compodoc/compodoc -p tsconfig.json -s"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
@@ -53,6 +54,7 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
+    "@compodoc/compodoc": "^1.1.11",
     "@nestjs/cli": "^7.5.2",
     "@nestjs/schematics": "^7.2.1",
     "@nestjs/testing": "^7.5.1",
