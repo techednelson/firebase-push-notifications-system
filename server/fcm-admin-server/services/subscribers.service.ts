@@ -17,6 +17,11 @@ export class SubscribersService {
   ) {}
 
   async findAll(): Promise<SubscriptionResponseDto[]> {
+    const subscriptions = await this.subscriberRepository.find();
+    return subscriptions.map(subscription => subscription as SubscriptionResponseDto);
+  }
+  
+  async findAllSubscribed(): Promise<SubscriptionResponseDto[]> {
     const subscriptions = await this.subscriberRepository
       .createQueryBuilder('subscriber')
       .where('subscriber.subscribed = :subscribed', { subscribed: true })

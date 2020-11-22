@@ -115,7 +115,10 @@ export class FcmService {
     } = notificationPayloadDto;
     try {
       const message: Message = {
-        data: { title, body },
+        notification: {
+          title,
+          body,
+        },
         token,
       };
       await admin.messaging().send(message);
@@ -165,7 +168,10 @@ export class FcmService {
     await queryRunner.startTransaction();
     try {
       const message: MulticastMessage = {
-        data: { title: subscribers[0].title, body: subscribers[0].body },
+        notification: {
+          title: subscribers[0].title,
+          body: subscribers[0].body
+        },
         tokens,
       };
       await admin.messaging().sendMulticast(message);
@@ -202,7 +208,7 @@ export class FcmService {
     await queryRunner.startTransaction();
     try {
       const message: Message = {
-        data: {
+        notification: {
           title,
           body,
         },

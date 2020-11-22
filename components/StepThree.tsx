@@ -14,6 +14,12 @@ import { SingleContext } from './context/SingleContext';
 import { NotificationContext } from './context/NotificationContext';
 import { axiosApiInstance } from '../pages/_app';
 import { router } from 'next/client';
+import { Message } from './common/models/Message';
+import { UsernamesCheckedContext } from './context/UsernamesCheckedContext';
+import { UsernamesSelectedContext } from './context/UsernamesSelectedContext';
+import { TargetContext } from './context/TargetContext';
+import { SinglePayload } from './common/models/SinglePayload';
+import { TopicPayload } from './common/models/TopicPayload';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,11 +48,31 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const StepThree = () => {
   const classes = useStyles();
-  const { stepper } = useContext(StepperContext);
-  const { notification } = useContext(NotificationContext);
-  const { topicPayload } = useContext(TopicContext);
-  const { singlePayload } = useContext(SingleContext);
-  const { multicast } = useContext(MulticastContext);
+  const { stepper, setStepper } = useContext(StepperContext);
+  const { notification, setNotification } = useContext(NotificationContext);
+  const { topicPayload, setTopicPayload } = useContext(TopicContext);
+  const { singlePayload, setSinglePayload } = useContext(SingleContext);
+  const { multicast, setMulticast } = useContext(MulticastContext);
+  const { setUsernamesChecked } = useContext(UsernamesCheckedContext,);
+  const { setUsernamesSelected } = useContext(UsernamesSelectedContext,);
+  const { setTarget } = useContext(TargetContext);
+  
+  const resetState = () => {
+    setStepper({
+      status: StepperStatus.INITIAL,
+      activeStep: 0,
+    });
+    setNotification(new Message());
+    setTarget(NotificationType.TOPIC);
+    setSinglePayload(new SinglePayload());
+    setTopicPayload(new TopicPayload());
+    setUsernamesSelected([]);
+    setUsernamesChecked([]);
+    setMulticast({
+      subscribers: [],
+      tokens: [],
+    });
+  }
 
   const handleSubmit = (type: NotificationType) => {
     let url;
@@ -67,9 +93,8 @@ const StepThree = () => {
     }
     axiosApiInstance
       .post(url, body)
-      .then(response => {
-        console.log(response);
-        router.push('list-notifications').then();
+      .then(() => {
+        router.push('list-notifications').then(() => resetState());
       })
       .catch(error => console.log(error));
   };

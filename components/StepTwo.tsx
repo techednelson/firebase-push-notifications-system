@@ -69,7 +69,7 @@ const StepTwo = () => {
 
   useEffect(() => {
     fetchTopics();
-    fetchSubscribers();
+    fetchSubscribed();
   }, []);
 
   const handleSubmit = () => {
@@ -133,9 +133,9 @@ const StepTwo = () => {
     }
   }, [stepper]);
 
-  const fetchSubscribers = () => {
+  const fetchSubscribed = () => {
     axiosApiInstance
-      .get('fcm-subscribers')
+      .get('fcm-subscribers/subscribed')
       .then(({ data }) => {
         if (data) {
           setSubscribers(data);

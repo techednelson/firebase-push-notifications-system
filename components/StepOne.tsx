@@ -3,7 +3,6 @@ import { TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { StepperStatus } from './common/enums';
 import { StepperEvent } from './common/interfaces';
-import { TopicContext } from './context/TopicContext';
 import { StepperContext } from './context/StepperContext';
 import { NotificationContext } from './context/NotificationContext';
 
