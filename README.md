@@ -1,12 +1,14 @@
+# firebase-push-notifications-system
+
 ## Description
 
-FCM push notifications system is a full stack web application which main goal is to help companies to send push 
+FCM push notifications system is a full stack web application which main goal is to help companies to send and manage push 
 notifications to their customer across Google Firebase Cloud Messaging Service as a middleware between the existing 
 company application and Firebase Cloud platform. 
 
-FCM push notifications system is build with a backend developed with [Nest](https://github.com/nestjs/nest). 
+FCM push notifications system is built with a Backend developed with [Nest](https://github.com/nestjs/nest). 
 A progressive Node.js framework for building efficient and scalable server-side applications, heavily inspired by 
-Angular and [Next.js](https://nextjs.org/) a React Framework which gives you a great developer experience 
+Angular and [Next.js](https://nextjs.org/) a React Frontend Framework which gives you a great developer experience 
 with great features like hybrid static & server rendering, TypeScript support,
  smart bundling, route pre-fetching, and more.
 
@@ -35,5 +37,4 @@ $ npm run start
 
   FCM-notifications-system is [MIT licensed](LICENSE).
 
-# firebase-push-notifications-system
 
