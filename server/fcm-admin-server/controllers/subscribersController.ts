@@ -13,7 +13,7 @@ export class SubscribersController {
   async findAll(): Promise<SubscriptionResponseDto[]> {
     return await this.subscribersService.findAll();
   }
-  
+
   @Get('/subscribed')
   async findAllSubscribed(): Promise<SubscriptionResponseDto[]> {
     return await this.subscribersService.findAllSubscribed();

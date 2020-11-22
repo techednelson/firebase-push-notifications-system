@@ -170,7 +170,7 @@ export class FcmService {
       const message: MulticastMessage = {
         notification: {
           title: subscribers[0].title,
-          body: subscribers[0].body
+          body: subscribers[0].body,
         },
         tokens,
       };

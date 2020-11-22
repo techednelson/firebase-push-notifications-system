@@ -53,10 +53,10 @@ const StepThree = () => {
   const { topicPayload, setTopicPayload } = useContext(TopicContext);
   const { singlePayload, setSinglePayload } = useContext(SingleContext);
   const { multicast, setMulticast } = useContext(MulticastContext);
-  const { setUsernamesChecked } = useContext(UsernamesCheckedContext,);
-  const { setUsernamesSelected } = useContext(UsernamesSelectedContext,);
+  const { setUsernamesChecked } = useContext(UsernamesCheckedContext);
+  const { setUsernamesSelected } = useContext(UsernamesSelectedContext);
   const { setTarget } = useContext(TargetContext);
-  
+
   const resetState = () => {
     setStepper({
       status: StepperStatus.INITIAL,
@@ -72,7 +72,7 @@ const StepThree = () => {
       subscribers: [],
       tokens: [],
     });
-  }
+  };
 
   const handleSubmit = (type: NotificationType) => {
     let url;
