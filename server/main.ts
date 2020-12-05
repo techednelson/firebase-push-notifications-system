@@ -6,11 +6,20 @@ import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
 import { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
+import * as admin from 'firebase-admin';
+import { ServiceAccount } from "firebase-admin";
+import serviceAccount from "./common/config/serviceAccountKey.json";
+
 
 (async function bootstrap() {
   const server = await NestFactory.create(AppModule);
+    // Initialize the firebase admin app
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount as ServiceAccount),
+    databaseURL: 'https://fcm-notifications-system.firebaseio.com',
+  });
   server.enableCors();
-  server.use(helmet());
+  // server.use(helmet());
   server.use(cookieParser());
   // server.use(
   //   csurf({

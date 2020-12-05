@@ -21,5 +21,5 @@ export class SubscriptionRequestDto {
   topic: string;
 
   @IsBoolean()
-  subscribed?: boolean;
+  subscribed: boolean;
 }

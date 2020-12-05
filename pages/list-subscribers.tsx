@@ -21,7 +21,7 @@ const ListSubscribers = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [subscribersBackup, setSubscribersBackup] = useState<Subscriber[]>([]);
 
-  useEffect(() => {
+  const fetchSubscribers = () => {
     axiosApiInstance
       .get('fcm-subscribers')
       .then(({ data }) => {
@@ -31,7 +31,9 @@ const ListSubscribers = () => {
         }
       })
       .catch(error => console.log(error));
-  }, []);
+  };
+
+  useEffect(() => fetchSubscribers(), []);
 
   useEffect(() => {
     let filtered: Subscriber[] = [];
@@ -58,7 +60,7 @@ const ListSubscribers = () => {
             No Subscribers for this project yet
           </Typography>
         ) : (
-          <EnhancedTable rows={subscribers} headCells={headCells} />
+          <EnhancedTable rows={subscribers} headCells={headCells} fetchFunction={fetchSubscribers} />
         )}
       </Content>
     </Dashboard>

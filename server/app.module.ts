@@ -23,7 +23,7 @@ import { ConfigModule } from '@nestjs/config';
     TypeOrmModule.forFeature([User]),
     NextModule,
     AuthModule,
-    FcmAdminServerModule,
+    FcmAdminServerModule
   ],
   controllers: [NextClientController],
   providers: [],

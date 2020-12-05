@@ -13,7 +13,7 @@ import { MulticastContext } from './context/MulticastContext';
 import { SingleContext } from './context/SingleContext';
 import { NotificationContext } from './context/NotificationContext';
 import { axiosApiInstance } from '../pages/_app';
-import { router } from 'next/client';
+import { useRouter } from 'next/router';
 import { Message } from './common/models/Message';
 import { UsernamesCheckedContext } from './context/UsernamesCheckedContext';
 import { UsernamesSelectedContext } from './context/UsernamesSelectedContext';
@@ -56,6 +56,7 @@ const StepThree = () => {
   const { setUsernamesChecked } = useContext(UsernamesCheckedContext);
   const { setUsernamesSelected } = useContext(UsernamesSelectedContext);
   const { setTarget } = useContext(TargetContext);
+  const router = useRouter();
 
   const resetState = () => {
     setStepper({

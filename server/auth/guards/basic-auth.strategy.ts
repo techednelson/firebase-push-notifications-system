@@ -6,7 +6,7 @@ import { Request } from 'express';
 export class BasicAuthGuard implements CanActivate {
   static validateRequest(request: Request): boolean {
     const authorization = Buffer.from(
-      request.headers['basic-authorization'] as string,
+      request.headers['fcm-basic-authentication'] as string,
       'base64',
     ).toString('ascii');
     const [username, password] = authorization.split(':');

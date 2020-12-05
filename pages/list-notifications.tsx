@@ -26,7 +26,7 @@ const ListNotifications = () => {
     Notification[]
   >([]);
 
-  useEffect(() => {
+  const fetchNotifications = () => {
     axiosApiInstance
       .get('fcm-notifications')
       .then(({ data }) => {
@@ -36,7 +36,9 @@ const ListNotifications = () => {
         }
       })
       .catch(error => console.log(error));
-  }, []);
+  };
+
+  useEffect(() => fetchNotifications(), []);
 
   useEffect(() => {
     let filtered: Notification[] = [];
@@ -65,7 +67,7 @@ const ListNotifications = () => {
             No notifications for this project yet
           </Typography>
         ) : (
-          <EnhancedTable rows={notifications} headCells={headCells} />
+          <EnhancedTable rows={notifications} headCells={headCells} fetchFunction={fetchNotifications} />
         )}
       </Content>
     </Dashboard>

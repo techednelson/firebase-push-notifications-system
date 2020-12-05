@@ -55,22 +55,29 @@ export class SubscribersService {
 
   async findAllTopics(): Promise<TopicsResponseDto> {
     try {
-      const response = await this.subscriberRepository
+      const topics = await this.subscriberRepository
         .createQueryBuilder('subscriber')
         .select('topic')
         .distinct(true)
         .getRawMany();
       const dto = new TopicsResponseDto();
-      dto.topics = response.map(obj => obj.topic);
+      dto.topics = topics.map(obj => obj.topic);
       return dto;
     } catch (error) {
       throw new ConflictException(error);
     }
   }
 
-  async update(username: string, subscriber: Subscriber): Promise<boolean> {
+  async update(token: string, subscribed: boolean): Promise<boolean> {
     try {
-      await this.subscriberRepository.save(subscriber);
+      const subscribers = await this.subscriberRepository
+      .createQueryBuilder('subscriber')
+      .where('subscriber.token = :token', { token })
+      .getMany();
+      for (const subscriber of subscribers) {
+        subscriber.subscribed = subscribed;
+        await this.subscriberRepository.save(subscriber);
+      }
       return true;
     } catch (error) {
       throw new ConflictException(error);

@@ -29,6 +29,9 @@ import { NextRouter, useRouter } from 'next/router';
 import Switch from '@material-ui/core/Switch';
 import { axiosApiInstance } from '../pages/_app';
 import { Grid } from '@material-ui/core';
+import Modal from '@material-ui/core/Modal';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from "@material-ui/core/Button";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -160,22 +163,31 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
   selected: number[];
   domain: string;
-  router: NextRouter;
+  setOpen: (isOpen: boolean) => void;
+  setIsProgress: (isProgress: boolean) => void;
+  setModalMessage: (message: string) => void;
+  fetchFunction: () => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, selected, domain, router } = props;
+  const { numSelected, selected, domain, setOpen, setIsProgress, setModalMessage, fetchFunction } = props;
 
   const deleteSelected = async () => {
     if (selected.length > 25) {
       return;
     }
     try {
-      await axiosApiInstance.post(`fcm-notifications/delete`, selected);
-      router.reload();
+      setIsProgress(true);
+      const resp = await axiosApiInstance.post(`fcm-notifications/delete`, selected);
+      if (resp.status === 200) {
+        setIsProgress(false);
+        fetchFunction();
+      }
     } catch (error) {
-      console.log('There was issue deleting the selected elements', error);
+      setIsProgress(false);
+      setModalMessage(error.message);
+      setOpen(true);
     }
   };
 
@@ -194,7 +206,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         >
           {numSelected} selected
         </Typography>
-      ) : numSelected > 2 && domain === 'notifications' ? (
+      ) : numSelected > 25 && domain === 'notifications' ? (
         <Typography
           className={classes.limitExceed}
           variant="subtitle1"
@@ -235,6 +247,21 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       marginBottom: theme.spacing(2),
     },
+    modal: {
+      position: 'absolute',
+      width: 400,
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid red',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      textAlign: 'center',
+    },
+    modalTitle: {
+      margin: 'auto',
+    },
+    closeModal: {
+      float: 'right',
+    },
     table: {
       minWidth: 750,
     },
@@ -257,11 +284,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-
-interface EnhancedTableProps {
-  rows: any;
-  headCells: HeadCell[];
-}
 
 const AntSwitch = withStyles((theme: Theme) =>
   createStyles({
@@ -299,7 +321,25 @@ const AntSwitch = withStyles((theme: Theme) =>
   }),
 )(Switch);
 
+const getModalStyle = () => {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+interface EnhancedTableProps {
+  rows: any;
+  headCells: HeadCell[];
+  fetchFunction: () => void
+}
+
 const EnhancedTable = (props: EnhancedTableProps) => {
+  const { rows, headCells, fetchFunction } = props;
   const classes = useStyles();
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof Notification | keyof Subscriber>(
@@ -308,10 +348,14 @@ const EnhancedTable = (props: EnhancedTableProps) => {
   const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [isProgress, setIsProgress] = useState(false);
   const router = useRouter();
   const [domain] = useState(
     router.pathname === '/list-notifications' ? 'notifications' : 'subscribers',
   );
+  const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -367,6 +411,7 @@ const EnhancedTable = (props: EnhancedTableProps) => {
     subscribed: boolean,
   ) => {
     event.preventDefault();
+    setIsProgress(true);
     const subscriber = new Subscriber();
     subscriber.username = username;
     subscriber.token = token;
@@ -375,11 +420,16 @@ const EnhancedTable = (props: EnhancedTableProps) => {
     await axiosApiInstance
       .post(`fcm/admin-toggle-subscription`, subscriber)
       .then(resp => {
+        setIsProgress(false);
         if (resp.status === 200) {
-          router.reload();
+          fetchFunction();
         }
       })
-      .catch(error => console.log(error));
+      .catch((error: Error) => {
+        setIsProgress(false);
+        setModalMessage(error.message);
+        setOpen(true);
+      });
   };
 
   const createRow = (row: any) => {
@@ -428,10 +478,14 @@ const EnhancedTable = (props: EnhancedTableProps) => {
         <EnhancedTableToolbar
           numSelected={selected.length}
           selected={selected}
-          router={router}
           domain={domain}
+          setOpen={setOpen}
+          setIsProgress={setIsProgress}
+          setModalMessage={setModalMessage}
+          fetchFunction={fetchFunction}
         />
         <TableContainer>
+          {isProgress ? <LinearProgress color="secondary" /> : null}
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -443,12 +497,12 @@ const EnhancedTable = (props: EnhancedTableProps) => {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={props.rows.length}
-              headCells={props.headCells}
+              rowCount={rows.length}
+              headCells={headCells}
               domain={domain}
             />
             <TableBody>
-              {stableSort(props.rows, getComparator(order, orderBy))
+              {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(Number(row.id));
@@ -488,13 +542,28 @@ const EnhancedTable = (props: EnhancedTableProps) => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={props.rows.length}
+          count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Modal
+        open={open}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div style={modalStyle} className={classes.modal}>
+          <h2 className={classes.modalTitle} id="simple-modal-title">Oops!</h2>
+          <p id="simple-modal-description">
+            {modalMessage}
+          </p>
+          <Button color="primary" className={classes.closeModal} autoFocus onClick={() => setOpen(false)} >
+            Close
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

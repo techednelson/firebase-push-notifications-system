@@ -10,7 +10,8 @@
       "dom.iterable",
       "esnext"
     ],
-    "strict": true,
+    "strict": false,
+    "noEmit": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -18,9 +19,7 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "noEmit": true,
-    "incremental": false
+    "experimentalDecorators": true
   },
   "include": [
     "next-env.d.ts",
